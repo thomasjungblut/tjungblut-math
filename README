@@ -1,7 +1,9 @@
 This is my own Math package, I plan to comment it out, generate JavaDocs and add Testcases.
 
+It should be a fast library, but it is unsafe since it never check the sizes when operating. This lib is also optimized for dense matrices.
+
 Currently it is just a split from my common library. 
 
 Also it is intended to be used with Java1.6, wheras my common is build for 1.7.
 
-You can simply build with "mvn clean package install"
+You can simply build with "mvn clean package install" the created jar contains debugable code + sources.
