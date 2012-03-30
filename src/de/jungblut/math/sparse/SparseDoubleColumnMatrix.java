@@ -12,7 +12,7 @@ import de.jungblut.math.DoubleMatrix;
 import de.jungblut.math.DoubleVector;
 import de.jungblut.math.DoubleVector.DoubleVectorElement;
 
-public class SparseDoubleColumnMatrix implements DoubleMatrix {
+public final class SparseDoubleColumnMatrix implements DoubleMatrix {
 
   // int -> vector, where int is the column index and vector the corresponding
   // column vector

@@ -1,127 +1,180 @@
 package de.jungblut.math;
 
+/**
+ * Standard matrix interface for double elements. Every implementation should
+ * return a fresh new Matrix when operating with other elements.
+ */
 public interface DoubleMatrix {
 
+  /**
+   * Not flagged value for sparse matrices, it is default to 0.0d.
+   */
   public static final double NOT_FLAGGED = 0.0d;
 
   /**
    * Get a specific value of the matrix.
    * 
-   * @param row
-   * @param col
    * @return Returns the integer value at in the column at the row.
    */
   public double get(int row, int col);
 
   /**
    * Returns the number of columns in the matrix.
-   * 
-   * @return
    */
   public int getColumnCount();
 
   /**
-   * Get a whole column of the matrix as vector. If the specified column doesn't
-   * exist a IllegalArgumentException is thrown.
-   * 
-   * @param col
-   * @return
-   * @throws IllegalArgumentException
+   * Get a whole column of the matrix as vector.
    */
   public DoubleVector getColumnVector(int col);
 
   /**
    * Returns the number of rows in this matrix.
-   * 
-   * @return
    */
   public int getRowCount();
 
   /**
    * Get a single row of the matrix as a vector.
-   * 
-   * @param row
-   * @return
    */
   public DoubleVector getRowVector(int row);
 
+  /**
+   * Sets the value at the given row and column index.
+   */
   public void set(int row, int col, double value);
 
+  /**
+   * Sets a whole column at index col with the given vector.
+   */
   public void setColumnVector(int col, DoubleVector column);
 
+  /**
+   * Sets the whole row at index rowIndex with the given vector.
+   */
   public void setRowVector(int rowIndex, DoubleVector row);
 
+  /**
+   * Multiplies this matrix (each element) with the given scalar and returns a
+   * new matrix.
+   */
   public DoubleMatrix multiply(double scalar);
 
+  /**
+   * Multiplies this matrix with the given other matrix.
+   */
   public DoubleMatrix multiply(DoubleMatrix other);
 
   /**
-   * Multiplies this matrix per element with a binary matrix.
+   * Multiplies this matrix per element with a binary (boolean) matrix, where
+   * false = 0 and true = 1.
    */
   public DoubleMatrix multiplyElementWise(BooleanMatrix other);
 
   /**
-   * Multiplies this matrix per element with a real matrix.
+   * Multiplies this matrix per element with a given matrix.
    */
   public DoubleMatrix multiplyElementWise(DoubleMatrix other);
 
+  /**
+   * Multiplies this matrix with a given vector v. The returning vector contains
+   * the sum of the rows.
+   */
   public DoubleVector multiplyVector(DoubleVector v);
 
+  /**
+   * Transposes this matrix.
+   */
   public DoubleMatrix transpose();
 
   /**
+   * Substracts the given amount by each element in this matrix. <br/>
    * = (amount - matrix value)
    */
   public DoubleMatrix subtractBy(double amount);
 
   /**
-   * = (m - amount)
+   * Subtracts each element in this matrix by the given amount.<br/>
+   * = (matrix value - amount)
    */
   public DoubleMatrix subtract(double amount);
 
   /**
-   * this-other
+   * Subtracts this matrix by the given other matrix.
    */
   public DoubleMatrix subtract(DoubleMatrix other);
 
   /**
-   * subtracts each element in a column by the related element in vec
+   * Subtracts each element in a column by the related element in the given
+   * vector.
    */
   public DoubleMatrix subtract(DoubleVector vec);
 
+  /**
+   * Divides each element in a column by the related element in the given
+   * vector.
+   */
   public DoubleMatrix divide(DoubleVector vec);
 
   /**
-   * this / other
+   * Divides this matrix by the given other matrix. (Per element division).
    */
   public DoubleMatrix divide(DoubleMatrix other);
 
   /**
-   * this / scalar
+   * Divides each element in this matrix by the given scalar.
    */
   public DoubleMatrix divide(double scalar);
 
   /**
-   * this+other
+   * Adds the elements in the given matrix to the elements in this matrix.
    */
   public DoubleMatrix add(DoubleMatrix other);
 
+  /**
+   * Pows each element by the given argument. <br/>
+   * = (matrix element^x)
+   */
   public DoubleMatrix pow(int x);
 
+  /**
+   * Returns the maximum value of the given column.
+   */
   public double max(int column);
 
+  /**
+   * Returns the minimum value of the given column.
+   */
   public double min(int column);
 
+  /**
+   * Sums all elements.
+   */
   public double sum();
 
+  /**
+   * Returns an array of column indices existing in this matrix.
+   */
   public int[] columnIndices();
 
+  /**
+   * Returns a {@link BooleanMatrix} where each element is true when it is not
+   * 0.0d.
+   */
   public BooleanMatrix getNonDefaultBooleanMatrix();
 
+  /**
+   * Returns true if the underlying implementation is sparse.
+   */
   public boolean isSparse();
 
+  /**
+   * Slices the given matrix from 0-rows and from 0-columns.
+   */
   public DoubleMatrix slice(int rows, int cols);
 
+  /**
+   * Slices the given matrix from rowOffset-rowMax and from colOffset-colMax.
+   */
   public DoubleMatrix slice(int rowOffset, int rowMax, int colOffset, int colMax);
 
 }
