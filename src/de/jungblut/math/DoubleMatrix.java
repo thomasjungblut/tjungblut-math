@@ -19,7 +19,8 @@ public interface DoubleMatrix {
   public double get(int row, int col);
 
   /**
-   * Returns the number of columns in the matrix.
+   * Returns the number of columns in the matrix. Always a constant time
+   * operation.
    */
   public int getColumnCount();
 
@@ -29,7 +30,8 @@ public interface DoubleMatrix {
   public DoubleVector getColumnVector(int col);
 
   /**
-   * Returns the number of rows in this matrix.
+   * Returns the number of rows in this matrix. Always a constant time
+   * operation.
    */
   public int getRowCount();
 

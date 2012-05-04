@@ -1,5 +1,9 @@
 package de.jungblut.math.tuple;
 
+/**
+ * Tuple class to hold two generic attributes. This class implements hashcode,
+ * equals and comparable via the first element.
+ */
 public final class Tuple<FIRST, SECOND> implements
     Comparable<Tuple<FIRST, SECOND>> {
 

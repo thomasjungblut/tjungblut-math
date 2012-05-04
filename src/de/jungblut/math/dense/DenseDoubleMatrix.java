@@ -9,18 +9,36 @@ import de.jungblut.math.DoubleMatrix;
 import de.jungblut.math.DoubleVector;
 import de.jungblut.math.tuple.Tuple;
 
+/**
+ * Dense double matrix implementation, internally uses two dimensional double
+ * arrays.
+ */
 public final class DenseDoubleMatrix implements DoubleMatrix {
 
   protected final double[][] matrix;
   protected final int numRows;
   protected final int numColumns;
 
+  /**
+   * Creates a new empty matrix from the rows and columns.
+   * 
+   * @param rows the num of rows.
+   * @param columns the num of columns.
+   */
   public DenseDoubleMatrix(int rows, int columns) {
     this.numRows = rows;
     this.numColumns = columns;
     this.matrix = new double[rows][columns];
   }
 
+  /**
+   * Creates a new empty matrix from the rows and columns filled with the given
+   * default value.
+   * 
+   * @param rows the num of rows.
+   * @param columns the num of columns.
+   * @param defaultValue the default value.
+   */
   public DenseDoubleMatrix(int rows, int columns, double defaultValue) {
     this.numRows = rows;
     this.numColumns = columns;
@@ -31,6 +49,14 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     }
   }
 
+  /**
+   * Creates a new empty matrix from the rows and columns filled with the given
+   * random values.
+   * 
+   * @param rows the num of rows.
+   * @param columns the num of columns.
+   * @param rand the random instance to use.
+   */
   public DenseDoubleMatrix(int rows, int columns, Random rand) {
     this.numRows = rows;
     this.numColumns = columns;
@@ -43,6 +69,11 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     }
   }
 
+  /**
+   * Simple copy constructor, but does only bend the reference to this instance.
+   * 
+   * @param otherMatrix the other matrix.
+   */
   public DenseDoubleMatrix(double[][] otherMatrix) {
     this.matrix = otherMatrix;
     this.numRows = otherMatrix.length;
@@ -52,11 +83,24 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
       this.numColumns = numRows;
   }
 
+  /**
+   * Sets the first column of this matrix to the given vector.
+   * 
+   * @param first the new first column of the given vector
+   */
   public DenseDoubleMatrix(DenseDoubleVector first) {
     this(first.getLength(), 1);
     setColumn(0, first.toArray());
   }
 
+  /**
+   * Copies the given double array v into the first row of this matrix, and
+   * creates this with the number of given rows and columns.
+   * 
+   * @param v the values to put into the first row.
+   * @param rows the number of rows.
+   * @param columns the number of columns.
+   */
   public DenseDoubleMatrix(double[] v, int rows, int columns) {
     this.matrix = new double[rows][columns];
 
@@ -75,6 +119,13 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     this.numColumns = columns;
   }
 
+  /**
+   * Creates a new matrix with the given vector into the first column and the
+   * other matrix to the other columns.
+   * 
+   * @param first the new first column.
+   * @param otherMatrix the other matrix to set on from the second column.
+   */
   public DenseDoubleMatrix(DenseDoubleVector first, DoubleMatrix otherMatrix) {
     this(otherMatrix.getRowCount(), otherMatrix.getColumnCount() + 1);
     setColumn(0, first.toArray());
@@ -82,12 +133,9 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
       setColumnVector(col, otherMatrix.getColumnVector(col - 1));
   }
 
-  /**
-   * Get a specific value of the matrix.
-   * 
-   * @param row
-   * @param col
-   * @return Returns the integer value at in the column at the row.
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#get(int, int)
    */
   @Override
   public final double get(int row, int col) {
@@ -95,10 +143,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
   }
 
   /**
-   * Get a whole column of the matrix as integer array.
-   * 
-   * @param col
-   * @return
+   * Gets a whole column of the matrix as a double array.
    */
   public final double[] getColumn(int col) {
     final double[] column = new double[numRows];
@@ -108,23 +153,18 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return column;
   }
 
-  /**
-   * Returns the number of columns in the matrix.
-   * 
-   * @return
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#getColumnCount()
    */
   @Override
   public final int getColumnCount() {
     return numColumns;
   }
 
-  /**
-   * Get a whole column of the matrix as vector. If the specified column doesn't
-   * exist a IllegalArgumentException is thrown.
-   * 
-   * @param col
-   * @return
-   * @throws IllegalArgumentException
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#getColumnVector(int)
    */
   @Override
   public final DoubleVector getColumnVector(int col) {
@@ -132,66 +172,80 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
   }
 
   /**
-   * Get the matrix as 2-dimensional integer array (first index is the row,
+   * Get the matrix as 2-dimensional double array (first dimension is the row,
    * second the column) to faster access the values.
-   * 
-   * @return
    */
   public final double[][] getValues() {
     return matrix;
   }
 
   /**
-   * Get a single row of the matrix as an integer array.
-   * 
-   * @param row
-   * @return
+   * Get a single row of the matrix as a double array.
    */
   public final double[] getRow(int row) {
     return matrix[row];
   }
 
-  /**
-   * Returns the number of rows in this matrix.
-   * 
-   * @return
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#getRowCount()
    */
   @Override
   public final int getRowCount() {
     return numRows;
   }
 
-  /**
-   * Get a single row of the matrix as a vector.
-   * 
-   * @param row
-   * @return
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#getRowVector(int)
    */
   @Override
   public final DoubleVector getRowVector(int row) {
     return new DenseDoubleVector(getRow(row));
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#set(int, int, double)
+   */
   @Override
   public final void set(int row, int col, double value) {
     this.matrix[row][col] = value;
   }
 
+  /**
+   * Sets the row to a given double array. This does not copy, rather than just
+   * bends the references.
+   */
   public final void setRow(int row, double[] value) {
     this.matrix[row] = value;
   }
 
+  /**
+   * Sets the column to a given double array. This does not copy, rather than
+   * just bends the references.
+   */
   public final void setColumn(int col, double[] values) {
     for (int i = 0; i < getRowCount(); i++) {
       this.matrix[i][col] = values[i];
     }
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#setColumnVector(int,
+   * de.jungblut.math.DoubleVector)
+   */
   @Override
   public void setColumnVector(int col, DoubleVector column) {
     this.setColumn(col, column.toArray());
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#setRowVector(int,
+   * de.jungblut.math.DoubleVector)
+   */
   @Override
   public void setRowVector(int rowIndex, DoubleVector row) {
     this.setRow(rowIndex, row.toArray());
@@ -199,13 +253,18 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
 
   /**
    * Returns the size of the matrix as string (ROWSxCOLUMNS).
-   * 
-   * @return
    */
   public String sizeToString() {
     return numRows + "x" + numColumns;
   }
 
+  /**
+   * Splits the last column from this matrix. Usually used to get a prediction
+   * column from some machine learning problem.
+   * 
+   * @return a tuple of a new sliced matrix and a vector which was the last
+   *         column.
+   */
   public final Tuple<DenseDoubleMatrix, DenseDoubleVector> splitLastColumn() {
     DenseDoubleMatrix m = new DenseDoubleMatrix(getRowCount(),
         getColumnCount() - 1);
@@ -273,6 +332,10 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
         new DenseDoubleMatrix(firstMatrix), new DenseDoubleMatrix(secondMatrix));
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#getNonDefaultBooleanMatrix()
+   */
   @Override
   public final BooleanMatrix getNonDefaultBooleanMatrix() {
     DenseBooleanMatrix m = new DenseBooleanMatrix(this.numRows, this.numColumns);
@@ -284,6 +347,10 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return m;
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#multiply(double)
+   */
   @Override
   public final DenseDoubleMatrix multiply(double scalar) {
     DenseDoubleMatrix m = new DenseDoubleMatrix(this.numRows, this.numColumns);
@@ -295,6 +362,10 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return m;
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#multiply(de.jungblut.math.DoubleMatrix)
+   */
   @Override
   public final DoubleMatrix multiply(DoubleMatrix other) {
     DenseDoubleMatrix matrix = new DenseDoubleMatrix(this.getRowCount(),
@@ -318,8 +389,10 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     // }
   }
 
-  /**
-   * Multiplies this matrix per element with a binary matrix.
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#multiplyElementWise(de.jungblut.math.
+   * BooleanMatrix)
    */
   @Override
   public final DenseDoubleMatrix multiplyElementWise(BooleanMatrix other) {
@@ -335,8 +408,11 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return matrix;
   }
 
-  /**
-   * Multiplies this matrix per element with a real matrix.
+  /*
+   * (non-Javadoc)
+   * @see
+   * de.jungblut.math.DoubleMatrix#multiplyElementWise(de.jungblut.math.DoubleMatrix
+   * )
    */
   @Override
   public final DoubleMatrix multiplyElementWise(DoubleMatrix other) {
@@ -352,6 +428,11 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return matrix;
   }
 
+  /*
+   * (non-Javadoc)
+   * @see
+   * de.jungblut.math.DoubleMatrix#multiplyVector(de.jungblut.math.DoubleVector)
+   */
   @Override
   public final DoubleVector multiplyVector(DoubleVector v) {
     DoubleVector vector = new DenseDoubleVector(this.getRowCount());
@@ -366,6 +447,10 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return vector;
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#transpose()
+   */
   @Override
   public DenseDoubleMatrix transpose() {
     DenseDoubleMatrix m = new DenseDoubleMatrix(this.numColumns, this.numRows);
@@ -377,8 +462,9 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return m;
   }
 
-  /**
-   * = (amount - matrix value)
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#subtractBy(double)
    */
   @Override
   public DenseDoubleMatrix subtractBy(double amount) {
@@ -391,8 +477,9 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return m;
   }
 
-  /**
-   * = (m - amount)
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#subtract(double)
    */
   @Override
   public DenseDoubleMatrix subtract(double amount) {
@@ -405,8 +492,9 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return m;
   }
 
-  /**
-   * this-other
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#subtract(de.jungblut.math.DoubleMatrix)
    */
   @Override
   public DoubleMatrix subtract(DoubleMatrix other) {
@@ -419,8 +507,9 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return m;
   }
 
-  /**
-   * subtracts each element in a column by the related element in vec
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#subtract(de.jungblut.math.DoubleVector)
    */
   @Override
   public DenseDoubleMatrix subtract(DoubleVector vec) {
@@ -432,6 +521,10 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return cop;
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#divide(de.jungblut.math.DoubleVector)
+   */
   @Override
   public DoubleMatrix divide(DoubleVector vec) {
     DoubleMatrix cop = new DenseDoubleMatrix(this.getRowCount(),
@@ -442,8 +535,9 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return cop;
   }
 
-  /**
-   * this / other
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#divide(de.jungblut.math.DoubleMatrix)
    */
   @Override
   public DoubleMatrix divide(DoubleMatrix other) {
@@ -456,8 +550,9 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return m;
   }
 
-  /**
-   * this / scalar
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#divide(double)
    */
   @Override
   public DoubleMatrix divide(double scalar) {
@@ -470,8 +565,9 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return m;
   }
 
-  /**
-   * this+other
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#add(de.jungblut.math.DoubleMatrix)
    */
   @Override
   public DoubleMatrix add(DoubleMatrix other) {
@@ -484,6 +580,10 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return m;
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#pow(int)
+   */
   @Override
   public DoubleMatrix pow(int x) {
     DoubleMatrix m = new DenseDoubleMatrix(this.numRows, this.numColumns);
@@ -495,6 +595,10 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return m;
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#max(int)
+   */
   @Override
   public double max(int column) {
     double max = Double.MIN_VALUE;
@@ -507,6 +611,10 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return max;
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#min(int)
+   */
   @Override
   public double min(int column) {
     double min = Double.MAX_VALUE;
@@ -519,11 +627,19 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return min;
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#slice(int, int)
+   */
   @Override
   public DoubleMatrix slice(int rows, int cols) {
     return slice(0, rows, 0, cols);
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#slice(int, int, int, int)
+   */
   @Override
   public DoubleMatrix slice(int rowOffset, int rowMax, int colOffset, int colMax) {
     DenseDoubleMatrix m = new DenseDoubleMatrix(rowMax - rowOffset, colMax
@@ -536,11 +652,19 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return m;
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#isSparse()
+   */
   @Override
   public boolean isSparse() {
     return false;
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#sum()
+   */
   @Override
   public double sum() {
     double x = 0.0d;
@@ -552,6 +676,10 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return x;
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleMatrix#columnIndices()
+   */
   @Override
   public int[] columnIndices() {
     int[] x = new int[getColumnCount()];
@@ -602,6 +730,9 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     }
   }
 
+  /**
+   * Gets the eye matrix (ones on the main diagonal) with a given dimension.
+   */
   public static DenseDoubleMatrix eye(int dimension) {
     DenseDoubleMatrix m = new DenseDoubleMatrix(dimension, dimension);
 
@@ -612,6 +743,9 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return m;
   }
 
+  /**
+   * Deep copies the given matrix into a new returned one.
+   */
   public static DenseDoubleMatrix copy(DenseDoubleMatrix matrix) {
     final double[][] src = matrix.getValues();
     final double[][] dest = new double[matrix.getRowCount()][matrix
@@ -623,7 +757,12 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return new DenseDoubleMatrix(dest);
   }
 
-  // this is actually strange, but works like this in octave
+  /**
+   * Some strange function I found in octave but I don't know what it was named.
+   * It does however multiply the elements from the transposed vector and the
+   * normal vector and sets it into the according indices of a new constructed
+   * matrix.
+   */
   public static DenseDoubleMatrix multiplyTransposedVectors(
       DoubleVector transposed, DoubleVector normal) {
     DenseDoubleMatrix m = new DenseDoubleMatrix(transposed.getLength(),
@@ -637,6 +776,9 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return m;
   }
 
+  /**
+   * Just a absolute error function.
+   */
   public static double error(DenseDoubleMatrix a, DenseDoubleMatrix b) {
     return a.subtract(b).sum();
   }

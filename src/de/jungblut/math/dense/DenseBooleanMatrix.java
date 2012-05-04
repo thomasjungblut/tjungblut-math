@@ -6,18 +6,36 @@ import java.util.Random;
 import de.jungblut.math.BooleanMatrix;
 import de.jungblut.math.BooleanVector;
 
+/**
+ * A dense implementation of {@link BooleanMatrix}, internal representated as a
+ * two-dimensional boolean array.
+ */
 public final class DenseBooleanMatrix implements BooleanMatrix {
 
   protected final boolean[][] matrix;
   protected final int numRows;
   protected final int numColumns;
 
+  /**
+   * Creates a new empty matrix of booleans with the number of rows and columns.
+   * 
+   * @param rows the number of rows.
+   * @param columns the number of columns.
+   */
   public DenseBooleanMatrix(int rows, int columns) {
     this.numRows = rows;
     this.numColumns = columns;
     this.matrix = new boolean[rows][columns];
   }
 
+  /**
+   * Creates a new empty matrix of booleans with the number of rows and columns
+   * with a defaultvalue.
+   * 
+   * @param rows the number of rows.
+   * @param columns the number of columns.
+   * @param defaultValue default value.
+   */
   public DenseBooleanMatrix(int rows, int columns, boolean defaultValue) {
     this.numRows = rows;
     this.numColumns = columns;
@@ -28,6 +46,14 @@ public final class DenseBooleanMatrix implements BooleanMatrix {
     }
   }
 
+  /**
+   * Creates a new empty matrix of booleans with the number of rows and columns
+   * with a random instance to fill the values.
+   * 
+   * @param rows the number of rows.
+   * @param columns the number of columns.
+   * @param rand the random instance to use to fill this matrix.
+   */
   public DenseBooleanMatrix(int rows, int columns, Random rand) {
     this.numRows = rows;
     this.numColumns = columns;
@@ -40,6 +66,11 @@ public final class DenseBooleanMatrix implements BooleanMatrix {
     }
   }
 
+  /**
+   * Copy constructor, does make a shallow copy.
+   * 
+   * @param otherMatrix a two dimensional other matrix.
+   */
   public DenseBooleanMatrix(boolean[][] otherMatrix) {
     this.matrix = otherMatrix;
     this.numRows = otherMatrix.length;
@@ -49,12 +80,9 @@ public final class DenseBooleanMatrix implements BooleanMatrix {
       this.numColumns = numRows;
   }
 
-  /**
-   * Get a specific value of the matrix.
-   * 
-   * @param row
-   * @param col
-   * @return Returns the integer value at in the column at the row.
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.BooleanMatrix#get(int, int)
    */
   @Override
   public final boolean get(int row, int col) {
@@ -62,10 +90,7 @@ public final class DenseBooleanMatrix implements BooleanMatrix {
   }
 
   /**
-   * Get a whole column of the matrix as integer array.
-   * 
-   * @param col
-   * @return
+   * Get a whole column of the matrix as a boolean array.
    */
   public final boolean[] getColumn(int col) {
     final boolean[] column = new boolean[numRows];
@@ -75,23 +100,18 @@ public final class DenseBooleanMatrix implements BooleanMatrix {
     return column;
   }
 
-  /**
-   * Returns the number of columns in the matrix.
-   * 
-   * @return
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.BooleanMatrix#getColumnCount()
    */
   @Override
   public final int getColumnCount() {
     return numColumns;
   }
 
-  /**
-   * Get a whole column of the matrix as vector. If the specified column doesn't
-   * exist a IllegalArgumentException is thrown.
-   * 
-   * @param col
-   * @return
-   * @throws IllegalArgumentException
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.BooleanMatrix#getColumnVector(int)
    */
   @Override
   public final BooleanVector getColumnVector(int col) {
@@ -101,8 +121,6 @@ public final class DenseBooleanMatrix implements BooleanMatrix {
   /**
    * Get the matrix as 2-dimensional integer array (first index is the row,
    * second the column) to faster access the values.
-   * 
-   * @return
    */
   public final boolean[][] getValues() {
     return matrix;
@@ -110,40 +128,42 @@ public final class DenseBooleanMatrix implements BooleanMatrix {
 
   /**
    * Get a single row of the matrix as an integer array.
-   * 
-   * @param row
-   * @return
    */
   public final boolean[] getRow(int row) {
     return matrix[row];
   }
 
-  /**
-   * Returns the number of rows in this matrix.
-   * 
-   * @return
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.BooleanMatrix#getRowCount()
    */
   @Override
   public final int getRowCount() {
     return numRows;
   }
 
-  /**
-   * Get a single row of the matrix as a vector.
-   * 
-   * @param row
-   * @return
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.BooleanMatrix#getRowVector(int)
    */
   @Override
   public final BooleanVector getRowVector(int row) {
     return new DenseBooleanVector(getRow(row));
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.BooleanMatrix#set(int, int, boolean)
+   */
   @Override
   public final void set(int row, int col, boolean value) {
     this.matrix[row][col] = value;
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.BooleanMatrix#transpose()
+   */
   @Override
   public BooleanMatrix transpose() {
     DenseBooleanMatrix m = new DenseBooleanMatrix(this.numColumns, this.numRows);
@@ -169,6 +189,10 @@ public final class DenseBooleanMatrix implements BooleanMatrix {
     return Arrays.deepToString(matrix);
   }
 
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.BooleanMatrix#columnIndices()
+   */
   @Override
   public int[] columnIndices() {
     int[] x = new int[getColumnCount()];
