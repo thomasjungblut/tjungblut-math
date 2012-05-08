@@ -385,6 +385,42 @@ public final class DenseDoubleVector implements DoubleVector {
     return minIndex;
   }
 
+  /**
+   * @return a new vector which has rinted each element.
+   */
+  public DenseDoubleVector rint() {
+    DenseDoubleVector v = new DenseDoubleVector(getLength());
+    for (int i = 0; i < getLength(); i++) {
+      double d = vector[i];
+      v.set(i, Math.rint(d));
+    }
+    return v;
+  }
+
+  /**
+   * @return a new vector which has rounded each element.
+   */
+  public DenseDoubleVector round() {
+    DenseDoubleVector v = new DenseDoubleVector(getLength());
+    for (int i = 0; i < getLength(); i++) {
+      double d = vector[i];
+      v.set(i, Math.round(d));
+    }
+    return v;
+  }
+
+  /**
+   * @return a new vector which has ceiled each element.
+   */
+  public DenseDoubleVector ceil() {
+    DenseDoubleVector v = new DenseDoubleVector(getLength());
+    for (int i = 0; i < getLength(); i++) {
+      double d = vector[i];
+      v.set(i, Math.ceil(d));
+    }
+    return v;
+  }
+
   /*
    * (non-Javadoc)
    * @see de.jungblut.math.DoubleVector#toArray()
