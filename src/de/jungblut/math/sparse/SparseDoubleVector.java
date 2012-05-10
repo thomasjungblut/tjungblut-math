@@ -22,7 +22,7 @@ public class SparseDoubleVector implements DoubleVector {
   }
 
   public SparseDoubleVector(DoubleVector v) {
-    this(v.getLength());
+    this(v.getDimension());
     Iterator<DoubleVectorElement> iterateNonZero = v.iterateNonZero();
     while (iterateNonZero.hasNext()) {
       DoubleVectorElement next = iterateNonZero.next();
