@@ -67,7 +67,7 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector apply(DoubleVectorFunction func) {
-    SparseDoubleVector newV = new SparseDoubleVector(this);
+    SparseDoubleVector newV = new SparseDoubleVector(this.dimension);
     Iterator<DoubleVectorElement> iterate = this.iterate();
     while (iterate.hasNext()) {
       DoubleVectorElement next = iterate.next();
@@ -81,7 +81,7 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector apply(DoubleVector other, DoubleDoubleVectorFunction func) {
-    SparseDoubleVector newV = new SparseDoubleVector(this);
+    SparseDoubleVector newV = new SparseDoubleVector(this.dimension);
     Iterator<DoubleVectorElement> iterate = this.iterate();
     while (iterate.hasNext()) {
       DoubleVectorElement next = iterate.next();
@@ -96,7 +96,7 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector add(DoubleVector other) {
-    DoubleVector result = new SparseDoubleVector(this);
+    DoubleVector result = new SparseDoubleVector(this.dimension);
     Iterator<DoubleVectorElement> iter = other.iterateNonZero();
     while (iter.hasNext()) {
       DoubleVectorElement e = iter.next();
@@ -108,8 +108,8 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector add(double scalar) {
-    DoubleVector v = new SparseDoubleVector(this);
-    Iterator<DoubleVectorElement> it = v.iterateNonZero();
+    DoubleVector v = new SparseDoubleVector(this.dimension);
+    Iterator<DoubleVectorElement> it = iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
       v.set(e.getIndex(), e.getValue() + scalar);
@@ -119,7 +119,7 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector subtract(DoubleVector other) {
-    DoubleVector result = new SparseDoubleVector(this);
+    DoubleVector result = new SparseDoubleVector(this.dimension);
     Iterator<DoubleVectorElement> iter = other.iterateNonZero();
     while (iter.hasNext()) {
       DoubleVectorElement e = iter.next();
@@ -131,8 +131,8 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector subtract(double scalar) {
-    DoubleVector v = new SparseDoubleVector(this);
-    Iterator<DoubleVectorElement> it = v.iterateNonZero();
+    DoubleVector v = new SparseDoubleVector(this.dimension);
+    Iterator<DoubleVectorElement> it = iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
       v.set(e.getIndex(), e.getValue() - scalar);
@@ -142,8 +142,8 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector multiply(double scalar) {
-    DoubleVector v = new SparseDoubleVector(this);
-    Iterator<DoubleVectorElement> it = v.iterateNonZero();
+    DoubleVector v = new SparseDoubleVector(this.dimension);
+    Iterator<DoubleVectorElement> it = iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
       v.set(e.getIndex(), e.getValue() * scalar);
@@ -168,8 +168,8 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector divide(double scalar) {
-    DoubleVector v = new SparseDoubleVector(this);
-    Iterator<DoubleVectorElement> it = v.iterateNonZero();
+    DoubleVector v = new SparseDoubleVector(this.dimension);
+    Iterator<DoubleVectorElement> it = iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
       v.set(e.getIndex(), e.getValue() / scalar);
@@ -179,8 +179,8 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector pow(int x) {
-    DoubleVector v = new SparseDoubleVector(this);
-    Iterator<DoubleVectorElement> it = v.iterateNonZero();
+    DoubleVector v = new SparseDoubleVector(this.dimension);
+    Iterator<DoubleVectorElement> it = iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
       double value = 0.0d;
@@ -196,8 +196,8 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector sqrt() {
-    DoubleVector v = new SparseDoubleVector(this);
-    Iterator<DoubleVectorElement> it = v.iterateNonZero();
+    DoubleVector v = new SparseDoubleVector(this.dimension);
+    Iterator<DoubleVectorElement> it = iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
       v.set(e.getIndex(), Math.sqrt(e.getValue()));
