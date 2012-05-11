@@ -172,15 +172,25 @@ public interface DoubleVector {
   public DoubleVector slice(int length);
 
   /**
-   * Slices this vector from index offset with the given length. So you end at
-   * the upper bound of (offset+length).
+   * Slices this vector from start index to the given end index (excluding).
+   * Length of the new vector is than (end-start)
    * 
-   * @param offset must be > 0 and smaller than the dimension of the vector
-   * @param length must be > 0 and smaller than the dimension of the vector.
-   *          This must be greater than the offset.
+   * @param start must be > 0 and smaller than the dimension of the vector
+   * @param end must be > 0 and smaller than the dimension of the vector.
+   *          This must be greater than the start.
+   * @return a new vector that is only (end-start) long.
+   */
+  public DoubleVector slice(int start, int end);
+
+  /**
+   * Slices this vector from start index with the given length. So you end at
+   * the upper bound of (start+length-1 as as the last value in your new vector).
+   * 
+   * @param start must be > 0 and smaller than the dimension of the vector
+   * @param length number of elements to take, start+length must be <= the vector length
    * @return a new vector that is only (length) long.
    */
-  public DoubleVector slice(int offset, int length);
+  public DoubleVector sliceByLength(int start, int length);
 
   /**
    * @return the maximum element value in this vector.
