@@ -220,6 +220,19 @@ public interface DoubleVector {
   public boolean isSparse();
 
   /**
+   * @return true if this instance is a named vector.Smarter and faster than
+   *         instanceof.
+   */
+  public boolean isNamed();
+
+  /**
+   * @return If this vector is a named instance, this will return its name. Or
+   *         null if this is not a named instance.
+   * 
+   */
+  public String getName();
+
+  /**
    * Class for iteration of elements, consists of an index and a value at this
    * index. Can be reused for performance purposes.
    */

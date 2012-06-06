@@ -595,4 +595,14 @@ public final class DenseDoubleVector implements DoubleVector {
     return list;
   }
 
+  @Override
+  public boolean isNamed() {
+    return false;
+  }
+
+  @Override
+  public String getName() {
+    return null;
+  }
+
 }

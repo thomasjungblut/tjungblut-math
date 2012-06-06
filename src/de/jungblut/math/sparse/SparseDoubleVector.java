@@ -405,4 +405,14 @@ public class SparseDoubleVector implements DoubleVector {
 
   }
 
+  @Override
+  public boolean isNamed() {
+    return false;
+  }
+
+  @Override
+  public String getName() {
+    return null;
+  }
+
 }
