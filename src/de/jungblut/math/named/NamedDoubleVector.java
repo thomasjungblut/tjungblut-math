@@ -180,4 +180,35 @@ public final class NamedDoubleVector implements DoubleVector {
     return vector.isSparse();
   }
 
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + ((name == null) ? 0 : name.hashCode());
+    result = prime * result + ((vector == null) ? 0 : vector.hashCode());
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    NamedDoubleVector other = (NamedDoubleVector) obj;
+    if (name == null) {
+      if (other.name != null)
+        return false;
+    } else if (!name.equals(other.name))
+      return false;
+    if (vector == null) {
+      if (other.vector != null)
+        return false;
+    } else if (!vector.equals(other.vector))
+      return false;
+    return true;
+  }
+
 }
