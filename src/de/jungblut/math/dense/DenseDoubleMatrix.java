@@ -84,6 +84,26 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
   }
 
   /**
+   * Generates a matrix out of an vector array. it treats the array entries as
+   * rows and the vector itself contains the values of the columns.
+   * 
+   * @param vectorArray the array of vectors.
+   */
+  public DenseDoubleMatrix(DoubleVector[] vectorArray) {
+    this.matrix = new double[vectorArray.length][];
+    this.numRows = vectorArray.length;
+
+    for (int i = 0; i < vectorArray.length; i++) {
+      this.setRowVector(i, vectorArray[i]);
+    }
+
+    if (matrix.length > 0)
+      this.numColumns = matrix[0].length;
+    else
+      this.numColumns = numRows;
+  }
+
+  /**
    * Sets the first column of this matrix to the given vector.
    * 
    * @param first the new first column of the given vector
