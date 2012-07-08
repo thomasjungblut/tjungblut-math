@@ -376,7 +376,7 @@ public class SparseDoubleVector implements DoubleVector {
       AbstractIterator<DoubleVectorElement> {
 
     private final DoubleVectorElement element = new DoubleVectorElement();
-    private TIntDoubleIterator iterator;
+    private final TIntDoubleIterator iterator;
 
     public NonZeroIterator() {
       iterator = vector.iterator();

@@ -29,23 +29,17 @@ public final class SparseBooleanColumnMatrix implements BooleanMatrix {
   /**
    * Get a specific value of the matrix.
    * 
-   * @param row
-   * @param col
    * @return Returns the integer value at in the column at the row.
    */
   @Override
   public final boolean get(int row, int col) {
     SparseBooleanVector sparseBooleanVector = this.matrix.get(col);
-    if (sparseBooleanVector != null)
-      return sparseBooleanVector.get(row);
-    else
-      return false;
+    return sparseBooleanVector != null && sparseBooleanVector.get(row);
   }
 
   /**
    * Returns the number of columns in the matrix.
    * 
-   * @return
    */
   @Override
   public final int getColumnCount() {
@@ -59,8 +53,6 @@ public final class SparseBooleanColumnMatrix implements BooleanMatrix {
 
   /**
    * Returns the number of rows in this matrix.
-   * 
-   * @return
    */
   @Override
   public final int getRowCount() {
@@ -70,8 +62,6 @@ public final class SparseBooleanColumnMatrix implements BooleanMatrix {
   /**
    * Get a single row of the matrix as a vector.
    * 
-   * @param row
-   * @return
    */
   @Override
   public final BooleanVector getRowVector(int row) {
@@ -109,8 +99,6 @@ public final class SparseBooleanColumnMatrix implements BooleanMatrix {
 
   /**
    * Returns the size of the matrix as string (ROWSxCOLUMNS).
-   * 
-   * @return
    */
   public String sizeToString() {
     return numRows + "x" + numColumns;

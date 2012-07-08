@@ -30,7 +30,6 @@ public final class DenseIntMatrix {
   /**
    * Looks for different values in the column of the matrix.
    * 
-   * @param col
    * @return Return true if the column has different values, otherwise false.
    */
   public boolean hasColumnDifferentValues(int col) {
@@ -75,8 +74,6 @@ public final class DenseIntMatrix {
   /**
    * Get a specific value of the matrix.
    * 
-   * @param row
-   * @param col
    * @return Returns the integer value at in the column at the row.
    */
   public final int get(int row, int col) {
@@ -86,8 +83,6 @@ public final class DenseIntMatrix {
   /**
    * Get a whole column of the matrix as integer array.
    * 
-   * @param col
-   * @return
    */
   public final int[] getColumn(int col) {
     final int[] column = new int[numRows];
@@ -100,7 +95,6 @@ public final class DenseIntMatrix {
   /**
    * Returns the number of columns in the matrix.
    * 
-   * @return
    */
   public final int getColumnCount() {
     return numColumns;
@@ -110,8 +104,6 @@ public final class DenseIntMatrix {
    * Get a whole column of the matrix as vector. If the specified column doesn't
    * exist a IllegalArgumentException is thrown.
    * 
-   * @param col
-   * @return
    * @throws IllegalArgumentException
    */
   public final DenseIntVector getColumnVector(int col) {
@@ -122,7 +114,6 @@ public final class DenseIntMatrix {
    * Get the matrix as 2-dimensional integer array (first index is the row,
    * second the column) to faster access the values.
    * 
-   * @return
    */
   public final int[][] getValues() {
     return matrix;
@@ -131,8 +122,6 @@ public final class DenseIntMatrix {
   /**
    * Get a single row of the matrix as an integer array.
    * 
-   * @param row
-   * @return
    */
   public final int[] getRow(int row) {
     return matrix[row];
@@ -141,7 +130,6 @@ public final class DenseIntMatrix {
   /**
    * Returns the number of rows in this matrix.
    * 
-   * @return
    */
   public final int getRowCount() {
     return numRows;
@@ -150,8 +138,6 @@ public final class DenseIntMatrix {
   /**
    * Get a single row of the matrix as a vector.
    * 
-   * @param row
-   * @return
    */
   public final DenseIntVector getRowVector(int row) {
     return new DenseIntVector(getRow(row));
@@ -164,8 +150,6 @@ public final class DenseIntMatrix {
   /**
    * Get the highest value of column in the matrix.
    * 
-   * @param col
-   * @return
    */
   public int maxColumnValue(int col) {
     int max = Integer.MIN_VALUE;
@@ -181,7 +165,6 @@ public final class DenseIntMatrix {
    * Calculates the maximum value for each column and return all maxima as an
    * integer value where the index is the column index.
    * 
-   * @return
    */
   public int[] maxColumnValues() {
     int[] maxColumnValues = new int[numColumns];
@@ -200,7 +183,6 @@ public final class DenseIntMatrix {
   /**
    * Returns the size of the matrix as string (ROWSxCOLUMNS).
    * 
-   * @return
    */
   public String sizeToString() {
     return numRows + "x" + numColumns;

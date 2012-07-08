@@ -21,7 +21,7 @@ public final class DenseIntVector {
     this.vector = new int[prediction.size()];
     int index = 0;
     for (Integer i : prediction) {
-      vector[index++] = i.intValue();
+      vector[index++] = i;
     }
   }
 
@@ -65,9 +65,9 @@ public final class DenseIntVector {
 
   public int getMaxValue() {
     int maxValue = vector[0];
-    for (int i = 0; i < vector.length; i++) {
-      if (maxValue < vector[i]) {
-        maxValue = vector[i];
+    for (int aVector : vector) {
+      if (maxValue < aVector) {
+        maxValue = aVector;
       }
     }
     return maxValue;

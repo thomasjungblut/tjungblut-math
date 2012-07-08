@@ -94,7 +94,7 @@ public final class DenseBooleanVector implements BooleanVector {
 
     @Override
     protected final BooleanVectorElement computeNext() {
-      while (array[currentIndex] == false) {
+      while (!array[currentIndex]) {
         currentIndex++;
         if (currentIndex >= array.length)
           return endOfData();

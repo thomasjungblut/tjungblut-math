@@ -177,8 +177,6 @@ public final class DenseBooleanMatrix implements BooleanMatrix {
 
   /**
    * Returns the size of the matrix as string (ROWSxCOLUMNS).
-   * 
-   * @return
    */
   public String sizeToString() {
     return numRows + "x" + numColumns;

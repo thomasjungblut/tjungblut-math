@@ -731,9 +731,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
       return false;
     if (numColumns != other.numColumns)
       return false;
-    if (numRows != other.numRows)
-      return false;
-    return true;
+    return numRows == other.numRows;
   }
 
   @Override

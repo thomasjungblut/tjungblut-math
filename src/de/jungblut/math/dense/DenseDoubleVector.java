@@ -260,8 +260,8 @@ public final class DenseDoubleVector implements DoubleVector {
   @Override
   public double sum() {
     double sum = 0.0d;
-    for (int i = 0; i < vector.length; i++) {
-      sum += vector[i];
+    for (double aVector : vector) {
+      sum += aVector;
     }
     return sum;
   }
@@ -508,9 +508,7 @@ public final class DenseDoubleVector implements DoubleVector {
     if (getClass() != obj.getClass())
       return false;
     DenseDoubleVector other = (DenseDoubleVector) obj;
-    if (!Arrays.equals(vector, other.vector))
-      return false;
-    return true;
+    return Arrays.equals(vector, other.vector);
   }
 
   /**
