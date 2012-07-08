@@ -170,6 +170,19 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
+   * @see de.jungblut.math.DoubleVector#subtractFrom(double)
+   */
+  @Override
+  public final DoubleVector subtractFrom(double v) {
+    DenseDoubleVector newv = new DenseDoubleVector(vector.length);
+    for (int i = 0; i < vector.length; i++) {
+      newv.set(i, v - vector[i]);
+    }
+    return newv;
+  }
+
+  /*
+   * (non-Javadoc)
    * @see de.jungblut.math.DoubleVector#multiply(double)
    */
   @Override

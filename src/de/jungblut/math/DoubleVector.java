@@ -89,12 +89,20 @@ public interface DoubleVector {
   public DoubleVector subtract(DoubleVector v);
 
   /**
-   * Subtracts the given scalar to this vector.
+   * Subtracts the given scalar to this vector. (vector - scalar).
    * 
    * @param scalar the scalar.
    * @return a new vector with the result at each element index.
    */
   public DoubleVector subtract(double scalar);
+
+  /**
+   * Subtracts the given scalar from this vector. (scalar - vector).
+   * 
+   * @param scalar the scalar.
+   * @return a new vector with the result at each element index.
+   */
+  public DoubleVector subtractFrom(double scalar);
 
   /**
    * Multiplies the given scalar to this vector.

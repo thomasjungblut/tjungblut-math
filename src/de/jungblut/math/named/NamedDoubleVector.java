@@ -166,6 +166,11 @@ public final class NamedDoubleVector implements DoubleVector {
   }
 
   @Override
+  public DoubleVector subtractFrom(double scalar) {
+    return vector.subtractFrom(scalar);
+  }
+
+  @Override
   public Iterator<DoubleVectorElement> iterateNonZero() {
     return vector.iterateNonZero();
   }
