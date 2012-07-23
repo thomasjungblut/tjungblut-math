@@ -16,13 +16,14 @@ public final class SparseDoubleColumnMatrix implements DoubleMatrix {
 
   // int -> vector, where int is the column index and vector the corresponding
   // column vector
-  private final TIntObjectHashMap<SparseDoubleVector> matrix = new TIntObjectHashMap<SparseDoubleVector>();
+  private final TIntObjectHashMap<SparseDoubleVector> matrix;
   protected final int numRows;
   protected final int numColumns;
 
   public SparseDoubleColumnMatrix(int rows, int columns) {
     this.numRows = rows;
     this.numColumns = columns;
+    matrix = new TIntObjectHashMap<SparseDoubleVector>(numColumns);
   }
 
   public SparseDoubleColumnMatrix(DoubleMatrix mat) {
