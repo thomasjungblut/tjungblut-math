@@ -279,18 +279,31 @@ public class SparseDoubleVector implements DoubleVector {
   public DoubleVector slice(int start, int end) {
     DoubleVector nv = new SparseDoubleVector(this.dimension);
     Iterator<DoubleVectorElement> iterateNonZero = iterateNonZero();
-    // TODO what about the end?
     while (iterateNonZero.hasNext()) {
       DoubleVectorElement next = iterateNonZero.next();
-      nv.set(next.getIndex() - start, next.getValue());
+      if (next.getIndex() < end) {
+        nv.set(next.getIndex() - start, next.getValue());
+      } else {
+        break;
+      }
     }
     return nv;
   }
 
   @Override
   public DoubleVector sliceByLength(int start, int length) {
-	  // TODO don't know :(
-	  return slice(start, length);
+    DoubleVector nv = new SparseDoubleVector(this.dimension);
+    Iterator<DoubleVectorElement> iterateNonZero = iterateNonZero();
+    final int endIndex = start + length;
+    while (iterateNonZero.hasNext()) {
+      DoubleVectorElement next = iterateNonZero.next();
+      if (next.getIndex() >= start && next.getIndex() > endIndex) {
+        nv.set(next.getIndex() - start, next.getValue());
+      } else {
+        break;
+      }
+    }
+    return nv;
   }
 
   @Override

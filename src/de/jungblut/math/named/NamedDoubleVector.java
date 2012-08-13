@@ -146,6 +146,11 @@ public final class NamedDoubleVector implements DoubleVector {
   }
 
   @Override
+  public DoubleVector sliceByLength(int start, int length) {
+    return vector.sliceByLength(start, length);
+  }
+
+  @Override
   public double max() {
     return vector.max();
   }

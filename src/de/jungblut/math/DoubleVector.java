@@ -172,30 +172,32 @@ public interface DoubleVector {
   public double dot(DoubleVector s);
 
   /**
-   * Slices this vector from index 0 to the given length.
+   * Slices this vector from index 0 to the end index.
    * 
    * @param length must be > 0 and smaller than the dimension of the vector.
    * @return a new vector that is only length long.
    */
-  public DoubleVector slice(int length);
+  public DoubleVector slice(int end);
 
   /**
    * Slices this vector from start index to the given end index (excluding).
    * Length of the new vector is than (end-start)
    * 
    * @param start must be > 0 and smaller than the dimension of the vector
-   * @param end must be > 0 and smaller than the dimension of the vector.
-   *          This must be greater than the start.
+   * @param end must be > 0 and smaller than the dimension of the vector. This
+   *          must be greater than the start.
    * @return a new vector that is only (end-start) long.
    */
   public DoubleVector slice(int start, int end);
 
   /**
    * Slices this vector from start index with the given length. So you end at
-   * the upper bound of (start+length-1 as as the last value in your new vector).
+   * the upper bound of (start+length-1 as as the last value in your new
+   * vector).
    * 
    * @param start must be > 0 and smaller than the dimension of the vector
-   * @param length number of elements to take, start+length must be <= the vector length
+   * @param length number of elements to take, start+length must be <= the
+   *          vector length
    * @return a new vector that is only (length) long.
    */
   public DoubleVector sliceByLength(int start, int length);
