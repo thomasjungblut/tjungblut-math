@@ -324,13 +324,26 @@ public final class DenseDoubleVector implements DoubleVector {
    * @see de.jungblut.math.DoubleVector#slice(int, int)
    */
   @Override
-  public DoubleVector slice(int offset, int length) {
-    DoubleVector nv = new DenseDoubleVector(length - offset);
+  public DoubleVector slice(int start, int end) {
+    DoubleVector nv = new DenseDoubleVector(end - start);
     int index = 0;
-    for (int i = offset; i < length; i++) {
+    for (int i = start; i < end; i++) {
       nv.set(index++, vector[i]);
     }
-
+    return nv;
+  }
+  
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleVector#sliceByLength(int, int)
+   */
+  @Override
+  public DoubleVector sliceByLength(int start, int length) {
+    DoubleVector nv = new DenseDoubleVector(length);
+    int index = start;
+    for (int i = 0; i < length; i++) {
+      nv.set(i, vector[index++]);
+    }
     return nv;
   }
 
