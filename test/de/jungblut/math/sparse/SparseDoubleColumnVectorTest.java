@@ -1,4 +1,4 @@
-package de.jungblut.math.dense;
+package de.jungblut.math.sparse;
 
 import junit.framework.TestCase;
 
@@ -6,12 +6,12 @@ import org.junit.Test;
 
 import de.jungblut.math.DoubleVector;
 
-public class DenseDoubleVectorTest extends TestCase {
+public class SparseDoubleColumnVectorTest extends TestCase {
 
   @Test
   public void testAccessors() throws Exception {
     double[] arr = new double[] { 1, 2, 3, 4, 5 };
-    DenseDoubleVector vec = new DenseDoubleVector(arr);
+    SparseDoubleVector vec = new SparseDoubleVector(arr);
     arrayEquals(arr, vec.toArray());
   }
 
@@ -19,7 +19,7 @@ public class DenseDoubleVectorTest extends TestCase {
   public void testMultiply() throws Exception {
     double[] arr = new double[] { 1, 2, 3, 4, 5 };
     double[] res = new double[] { 1, 4, 9, 16, 25 };
-    DenseDoubleVector vec = new DenseDoubleVector(arr);
+    SparseDoubleVector vec = new SparseDoubleVector(arr);
     DoubleVector multiply = vec.multiply(vec);
     arrayEquals(res, multiply.toArray());
   }
@@ -29,7 +29,7 @@ public class DenseDoubleVectorTest extends TestCase {
     double[] arr = new double[] { 1, 2, 3, 4, 5 };
     double[] res = new double[] { 1, 4, 9, 16, 25 };
     double[] res3 = new double[] { 1, 8, 27, 64, 125 };
-    DenseDoubleVector vec = new DenseDoubleVector(arr);
+    SparseDoubleVector vec = new SparseDoubleVector(arr);
     DoubleVector multiply = vec.pow(2);
     arrayEquals(res, multiply.toArray());
 
@@ -44,4 +44,5 @@ public class DenseDoubleVectorTest extends TestCase {
       assertEquals(left[i], right[i]);
     }
   }
+
 }

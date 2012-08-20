@@ -23,13 +23,22 @@ public final class SparseDoubleColumnMatrix implements DoubleMatrix {
   public SparseDoubleColumnMatrix(int rows, int columns) {
     this.numRows = rows;
     this.numColumns = columns;
-    matrix = new TIntObjectHashMap<SparseDoubleVector>(numColumns);
+    this.matrix = new TIntObjectHashMap<SparseDoubleVector>(numColumns);
   }
 
   public SparseDoubleColumnMatrix(DoubleMatrix mat) {
     this(mat.getRowCount(), mat.getColumnCount());
     for (int i = 0; i < numColumns; i++) {
       setColumnVector(i, mat.getColumnVector(i));
+    }
+  }
+
+  public SparseDoubleColumnMatrix(double[][] otherMatrix) {
+    this(otherMatrix.length, otherMatrix[0].length);
+    for (int i = 0; i < numColumns; i++) {
+      for (int row = 0; row < numRows; row++) {
+        set(row, i, otherMatrix[row][i]);
+      }
     }
   }
 
@@ -72,7 +81,7 @@ public final class SparseDoubleColumnMatrix implements DoubleMatrix {
     int[] keys = matrix.keys();
     DoubleVector v = new SparseDoubleVector(getColumnCount());
     for (int key : keys) {
-      v.set(key, get(key, row));
+      v.set(key, get(row, key));
     }
     return v;
   }
