@@ -111,7 +111,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
    * @param vectorArray the list of vectors.
    */
   public DenseDoubleMatrix(List<DoubleVector> vec) {
-    this(vec.get(0).getDimension(), vec.size());
+    this(vec.size(), vec.get(0).getDimension());
 
     int index = 0;
     for (DoubleVector value : vec) {
