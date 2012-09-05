@@ -2,6 +2,7 @@ package de.jungblut.math.dense;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Random;
 
 import de.jungblut.math.BooleanMatrix;
@@ -84,7 +85,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
   }
 
   /**
-   * Generates a matrix out of an vector array. it treats the array entries as
+   * Generates a matrix out of a vector array. it treats the array entries as
    * rows and the vector itself contains the values of the columns.
    * 
    * @param vectorArray the array of vectors.
@@ -101,6 +102,22 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
       this.numColumns = matrix[0].length;
     else
       this.numColumns = numRows;
+  }
+
+  /**
+   * Generates a matrix out of a vector list. it treats the entries as rows and
+   * the vector itself contains the values of the columns.
+   * 
+   * @param vectorArray the list of vectors.
+   */
+  public DenseDoubleMatrix(List<DoubleVector> vec) {
+    this(vec.get(0).getDimension(), vec.size());
+
+    int index = 0;
+    for (DoubleVector value : vec) {
+      matrix[index++] = value.toArray();
+    }
+
   }
 
   /**
