@@ -1,6 +1,7 @@
 /target
 /.settings
 /lib
+/bin
 /.project
 /.classpath
 /tjungblut-math.iml
