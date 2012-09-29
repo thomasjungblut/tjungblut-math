@@ -1,10 +1,13 @@
 package de.jungblut.math.dense;
 
+import java.util.Iterator;
+
 import junit.framework.TestCase;
 
 import org.junit.Test;
 
 import de.jungblut.math.DoubleVector;
+import de.jungblut.math.DoubleVector.DoubleVectorElement;
 
 public class DenseDoubleVectorTest extends TestCase {
 
@@ -35,6 +38,17 @@ public class DenseDoubleVectorTest extends TestCase {
 
     multiply = vec.pow(3);
     arrayEquals(res3, multiply.toArray());
+  }
+  
+  @Test
+  public void testIterateNonZero() throws Exception {
+    double[] arr = new double[] { 1, 2, 3, 4, 5 };
+    DenseDoubleVector vec = new DenseDoubleVector(arr);
+    Iterator<DoubleVectorElement> iterateNonZero = vec.iterateNonZero();
+    while(iterateNonZero.hasNext()){
+      DoubleVectorElement next = iterateNonZero.next();
+      assertEquals(arr[next.getIndex()], next.getValue());
+    }
   }
 
   public void arrayEquals(double[] left, double[] right) {

@@ -332,7 +332,7 @@ public final class DenseDoubleVector implements DoubleVector {
     }
     return nv;
   }
-  
+
   /*
    * (non-Javadoc)
    * @see de.jungblut.math.DoubleVector#sliceByLength(int, int)
@@ -540,6 +540,8 @@ public final class DenseDoubleVector implements DoubleVector {
 
     @Override
     protected final DoubleVectorElement computeNext() {
+      if (currentIndex >= array.length)
+        return endOfData();
       while (array[currentIndex] == 0.0d) {
         currentIndex++;
         if (currentIndex >= array.length)
@@ -547,6 +549,7 @@ public final class DenseDoubleVector implements DoubleVector {
       }
       element.setIndex(currentIndex);
       element.setValue(array[currentIndex]);
+      currentIndex++;
       return element;
     }
   }
