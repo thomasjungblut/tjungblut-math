@@ -55,7 +55,6 @@ public class DenseDoubleMatrixTest extends TestCase {
     double[][] arr = new double[][] { { 1, 2, 3 }, { 4, 5, 6 } };
     DenseDoubleMatrix mat = new DenseDoubleMatrix(arr);
     DoubleMatrix multiply = mat.multiply(mat.transpose());
-
     assertEquals(2, multiply.getRowCount());
     assertEquals(2, multiply.getColumnCount());
 
@@ -63,6 +62,7 @@ public class DenseDoubleMatrixTest extends TestCase {
     assertEquals(32.0d, multiply.get(0, 1));
     assertEquals(32.0d, multiply.get(1, 0));
     assertEquals(77.0d, multiply.get(1, 1));
+
   }
 
   @Test

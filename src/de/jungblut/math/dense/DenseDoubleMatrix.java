@@ -412,18 +412,15 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     final int n = this.numColumns;
     final int p = other.getColumnCount();
 
-    for (int j = p; --j >= 0;) {
-      for (int i = m; --i >= 0;) {
-        double s = 0;
-        for (int k = n; --k >= 0;) {
-          s += get(i, k) * other.get(k, j);
+    for (int k = 0; k < n; k++) {
+      for (int i = 0; i < m; i++) {
+        for (int j = 0; j < p; j++) {
+          matrix.set(i, j, matrix.get(i, j) + get(i, k) * other.get(k, j));
         }
-        matrix.set(i, j, s + matrix.get(i, j));
       }
     }
 
     return matrix;
-    // }
   }
 
   /*
