@@ -111,6 +111,16 @@ public final class NamedDoubleVector implements DoubleVector {
   }
 
   @Override
+  public DoubleVector divideFrom(DoubleVector vector) {
+    return vector.divideFrom(vector);
+  }
+
+  @Override
+  public DoubleVector divide(DoubleVector vector) {
+    return vector.divide(vector);
+  }
+
+  @Override
   public DoubleVector pow(int x) {
     return vector.pow(x);
   }

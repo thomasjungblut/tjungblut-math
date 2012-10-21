@@ -297,6 +297,34 @@ public final class DenseDoubleVector implements DoubleVector {
     return v;
   }
 
+  @Override
+  public DoubleVector divideFrom(DoubleVector vector) {
+    DoubleVector v = new DenseDoubleVector(this.getLength());
+    for (int i = 0; i < v.getLength(); i++) {
+      if (this.get(i) != 0.0d) {
+        double result = vector.get(i) / this.get(i);
+        v.set(i, result);
+      } else {
+        v.set(i, 0.0d);
+      }
+    }
+    return v;
+  }
+
+  @Override
+  public DoubleVector divide(DoubleVector vector) {
+    DoubleVector v = new DenseDoubleVector(this.getLength());
+    for (int i = 0; i < v.getLength(); i++) {
+      if (vector.get(i) != 0.0d) {
+        double result = this.get(i) / vector.get(i);
+        v.set(i, result);
+      } else {
+        v.set(i, 0.0d);
+      }
+    }
+    return v;
+  }
+
   /*
    * (non-Javadoc)
    * @see de.jungblut.math.DoubleVector#dot(de.jungblut.math.DoubleVector)

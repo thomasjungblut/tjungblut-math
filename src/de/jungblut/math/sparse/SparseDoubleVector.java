@@ -189,6 +189,28 @@ public class SparseDoubleVector implements DoubleVector {
   }
 
   @Override
+  public DoubleVector divide(DoubleVector vector) {
+    DoubleVector v = new SparseDoubleVector(this.dimension);
+    Iterator<DoubleVectorElement> it = iterateNonZero();
+    while (it.hasNext()) {
+      DoubleVectorElement e = it.next();
+      v.set(e.getIndex(), e.getValue() / vector.get(e.getIndex()));
+    }
+    return v;
+  }
+
+  @Override
+  public DoubleVector divideFrom(DoubleVector vector) {
+    DoubleVector v = new SparseDoubleVector(this.dimension);
+    Iterator<DoubleVectorElement> it = vector.iterateNonZero();
+    while (it.hasNext()) {
+      DoubleVectorElement e = it.next();
+      v.set(e.getIndex(), e.getValue() / get(e.getIndex()));
+    }
+    return v;
+  }
+
+  @Override
   public DoubleVector pow(int x) {
     DoubleVector v = new SparseDoubleVector(this.dimension);
     Iterator<DoubleVectorElement> it = iterateNonZero();

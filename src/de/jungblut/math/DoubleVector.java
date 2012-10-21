@@ -137,6 +137,22 @@ public interface DoubleVector {
   public DoubleVector divideFrom(double scalar);
 
   /**
+   * Divides the given vector by this vector (= parameter vector / this vector).
+   * 
+   * @param vector the given vector.
+   * @return a new vector with the result of the operation.
+   */
+  public DoubleVector divideFrom(DoubleVector vector);
+
+  /**
+   * Divides this vector by the given vector. (= vector/parameter vector).
+   * 
+   * @param vector the given vector.
+   * @return a new vector with the result of the operation.
+   */
+  public DoubleVector divide(DoubleVector vector);
+
+  /**
    * Powers this vector by the given amount. (=vector^x).
    * 
    * @param x the given exponent.
