@@ -229,6 +229,16 @@ public interface DoubleVector {
   public double min();
 
   /**
+   * @return the index where the element value in this vector is the maximum.
+   */
+  public int maxIndex();
+
+  /**
+   * @return the index where the element value in this vector is the minimum.
+   */
+  public int minIndex();
+
+  /**
    * @return an array representation of this vector.
    */
   public double[] toArray();

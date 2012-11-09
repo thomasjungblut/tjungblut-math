@@ -391,9 +391,11 @@ public final class DenseDoubleVector implements DoubleVector {
     return max;
   }
 
-  /**
-   * @return the index where the maximum resides.
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleVector#maxIndex()
    */
+  @Override
   public int maxIndex() {
     double max = -Double.MAX_VALUE;
     int maxIndex = 0;
@@ -423,9 +425,11 @@ public final class DenseDoubleVector implements DoubleVector {
     return min;
   }
 
-  /**
-   * @return the index where the minimum resides.
+  /*
+   * (non-Javadoc)
+   * @see de.jungblut.math.DoubleVector#minIndex()
    */
+  @Override
   public int minIndex() {
     double min = Double.MAX_VALUE;
     int minIndex = 0;

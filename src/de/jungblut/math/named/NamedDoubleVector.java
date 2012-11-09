@@ -201,6 +201,16 @@ public final class NamedDoubleVector implements DoubleVector {
   }
 
   @Override
+  public int maxIndex() {
+    return this.vector.maxIndex();
+  }
+
+  @Override
+  public int minIndex() {
+    return this.vector.minIndex();
+  }
+
+  @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;

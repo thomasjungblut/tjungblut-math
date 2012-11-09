@@ -355,6 +355,36 @@ public class SparseDoubleVector implements DoubleVector {
   }
 
   @Override
+  public int maxIndex() {
+    int index = 0;
+    double res = -Double.MAX_VALUE;
+    Iterator<DoubleVectorElement> it = this.iterateNonZero();
+    while (it.hasNext()) {
+      DoubleVectorElement e = it.next();
+      if (res < e.getValue()) {
+        res = e.getValue();
+        index = e.getIndex();
+      }
+    }
+    return index;
+  }
+
+  @Override
+  public int minIndex() {
+    int index = 0;
+    double res = Double.MAX_VALUE;
+    Iterator<DoubleVectorElement> it = this.iterateNonZero();
+    while (it.hasNext()) {
+      DoubleVectorElement e = it.next();
+      if (res > e.getValue()) {
+        res = e.getValue();
+        index = e.getIndex();
+      }
+    }
+    return index;
+  }
+
+  @Override
   public double[] toArray() {
     double[] d = new double[dimension];
     Iterator<DoubleVectorElement> it = this.iterateNonZero();
