@@ -11,6 +11,7 @@ import de.jungblut.math.BooleanVector.BooleanVectorElement;
 import de.jungblut.math.DoubleMatrix;
 import de.jungblut.math.DoubleVector;
 import de.jungblut.math.DoubleVector.DoubleVectorElement;
+import de.jungblut.math.dense.DenseDoubleVector;
 
 public final class SparseDoubleColumnMatrix implements DoubleMatrix {
 
@@ -29,6 +30,14 @@ public final class SparseDoubleColumnMatrix implements DoubleMatrix {
   public SparseDoubleColumnMatrix(DoubleMatrix mat) {
     this(mat.getRowCount(), mat.getColumnCount());
     for (int i = 0; i < numColumns; i++) {
+      setColumnVector(i, mat.getColumnVector(i));
+    }
+  }
+
+  public SparseDoubleColumnMatrix(DenseDoubleVector v, DoubleMatrix mat) {
+    this(mat.getRowCount(), mat.getColumnCount() + 1);
+    setColumnVector(0, v);
+    for (int i = 1; i < numColumns; i++) {
       setColumnVector(i, mat.getColumnVector(i));
     }
   }
