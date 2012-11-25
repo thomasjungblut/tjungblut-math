@@ -61,6 +61,16 @@ public final class SparseDoubleColumnMatrix implements DoubleMatrix {
 
   }
 
+  public SparseDoubleColumnMatrix(DoubleVector[] vec) {
+    this(vec[0].getDimension(), vec.length);
+
+    int key = 0;
+    for (DoubleVector value : vec) {
+      matrix.put(key++, new SparseDoubleVector(value));
+    }
+
+  }
+
   @Override
   public double get(int row, int col) {
     SparseDoubleVector sparseDoubleVector = matrix.get(col);
