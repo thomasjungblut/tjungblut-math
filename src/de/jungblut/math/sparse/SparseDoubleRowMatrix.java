@@ -43,7 +43,7 @@ public final class SparseDoubleRowMatrix implements DoubleMatrix {
   }
 
   public SparseDoubleRowMatrix(double[][] otherMatrix) {
-    this(otherMatrix[0].length, otherMatrix.length);
+    this(otherMatrix.length, otherMatrix[0].length);
     for (int i = 0; i < numColumns; i++) {
       for (int row = 0; row < numRows; row++) {
         set(row, i, otherMatrix[row][i]);
