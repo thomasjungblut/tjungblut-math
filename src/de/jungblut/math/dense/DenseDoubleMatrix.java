@@ -371,21 +371,6 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleMatrix#getNonDefaultBooleanMatrix()
-   */
-  @Override
-  public final BooleanMatrix getNonDefaultBooleanMatrix() {
-    DenseBooleanMatrix m = new DenseBooleanMatrix(this.numRows, this.numColumns);
-    for (int i = 0; i < numRows; i++) {
-      for (int j = 0; j < numColumns; j++) {
-        m.set(i, j, this.matrix[i][j] != NOT_FLAGGED);
-      }
-    }
-    return m;
-  }
-
-  /*
-   * (non-Javadoc)
    * @see de.jungblut.math.DoubleMatrix#multiply(double)
    */
   @Override

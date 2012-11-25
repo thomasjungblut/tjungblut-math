@@ -159,12 +159,6 @@ public interface DoubleMatrix {
   public int[] columnIndices();
 
   /**
-   * Returns a {@link BooleanMatrix} where each element is true when it is not
-   * 0.0d.
-   */
-  public BooleanMatrix getNonDefaultBooleanMatrix();
-
-  /**
    * Returns true if the underlying implementation is sparse.
    */
   public boolean isSparse();

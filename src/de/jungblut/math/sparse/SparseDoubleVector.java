@@ -62,7 +62,9 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public void set(int index, double value) {
-    vector.put(index, value);
+    if (value != 0d) {
+      vector.put(index, value);
+    }
   }
 
   @Override
