@@ -38,12 +38,12 @@ public final class SparseDoubleRowMatrix implements DoubleMatrix {
     this(mat.getRowCount(), mat.getColumnCount() + 1);
     setColumnVector(0, v);
     for (int i = 1; i < numColumns; i++) {
-      setRowVector(i, mat.getRowVector(i));
+      setColumnVector(i, mat.getColumnVector(i - 1));
     }
   }
 
   public SparseDoubleRowMatrix(double[][] otherMatrix) {
-    this(otherMatrix.length, otherMatrix[0].length);
+    this(otherMatrix[0].length, otherMatrix.length);
     for (int i = 0; i < numColumns; i++) {
       for (int row = 0; row < numRows; row++) {
         set(row, i, otherMatrix[row][i]);
@@ -52,7 +52,7 @@ public final class SparseDoubleRowMatrix implements DoubleMatrix {
   }
 
   public SparseDoubleRowMatrix(List<DoubleVector> vec) {
-    this(vec.get(0).getDimension(), vec.size());
+    this(vec.size(), vec.get(0).getDimension());
 
     int key = 0;
     for (DoubleVector value : vec) {
@@ -62,7 +62,7 @@ public final class SparseDoubleRowMatrix implements DoubleMatrix {
   }
 
   public SparseDoubleRowMatrix(DoubleVector[] vec) {
-    this(vec[0].getDimension(), vec.length);
+    this(vec.length, vec[0].getDimension());
 
     int key = 0;
     for (DoubleVector value : vec) {
