@@ -78,10 +78,11 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
   public DenseDoubleMatrix(double[][] otherMatrix) {
     this.matrix = otherMatrix;
     this.numRows = otherMatrix.length;
-    if (matrix.length > 0)
+    if (matrix.length > 0) {
       this.numColumns = matrix[0].length;
-    else
+    } else {
       this.numColumns = numRows;
+    }
   }
 
   /**
@@ -165,9 +166,12 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
    */
   public DenseDoubleMatrix(DenseDoubleVector first, DoubleMatrix otherMatrix) {
     this(otherMatrix.getRowCount(), otherMatrix.getColumnCount() + 1);
-    setColumn(0, first.toArray());
-    for (int col = 1; col < otherMatrix.getColumnCount() + 1; col++)
-      setColumnVector(col, otherMatrix.getColumnVector(col - 1));
+    for (int row = 0; row < getRowCount(); row++) {
+      set(row, 0, first.get(row));
+      DoubleVector rowVector = otherMatrix.getRowVector(row);
+      System.arraycopy(rowVector.toArray(), 0, matrix[row], 1,
+          rowVector.getLength());
+    }
   }
 
   /*
