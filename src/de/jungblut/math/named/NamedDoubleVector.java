@@ -177,7 +177,7 @@ public final class NamedDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector deepCopy() {
-    return vector.deepCopy();
+    return new NamedDoubleVector(name, vector.deepCopy());
   }
 
   @Override
