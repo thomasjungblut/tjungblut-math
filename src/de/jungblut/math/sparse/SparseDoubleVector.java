@@ -26,22 +26,22 @@ public class SparseDoubleVector implements DoubleVector {
     Iterator<DoubleVectorElement> iterateNonZero = v.iterateNonZero();
     while (iterateNonZero.hasNext()) {
       DoubleVectorElement next = iterateNonZero.next();
-      vector.put(next.getIndex(), next.getValue());
+      set(next.getIndex(), next.getValue());
     }
   }
 
   public SparseDoubleVector(double[] arr) {
     this(arr.length);
     for (int i = 0; i < arr.length; i++) {
-      vector.put(i, arr[i]);
+      set(i, arr[i]);
     }
   }
 
   public SparseDoubleVector(double[] arr, double f1) {
     this(arr.length + 1);
-    vector.put(0, f1);
+    set(0, f1);
     for (int i = 1; i < arr.length; i++) {
-      vector.put(i, arr[i]);
+      set(i, arr[i]);
     }
   }
 
