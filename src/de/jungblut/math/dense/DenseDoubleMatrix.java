@@ -9,12 +9,15 @@ import de.jungblut.math.BooleanMatrix;
 import de.jungblut.math.DoubleMatrix;
 import de.jungblut.math.DoubleVector;
 import de.jungblut.math.tuple.Tuple;
+import de.jungblut.math.util.OSUtils;
 
 /**
  * Dense double matrix implementation, internally uses two dimensional double
  * arrays.
  */
 public final class DenseDoubleMatrix implements DoubleMatrix {
+
+  private static final boolean JBLAS_AVAILABLE = !OSUtils.isWindows64Bit();
 
   private final double[][] matrix;
   private final int numRows;
@@ -400,11 +403,19 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     final int m = this.numRows;
     final int n = this.numColumns;
     final int p = other.getColumnCount();
-
-    for (int k = 0; k < n; k++) {
-      for (int i = 0; i < m; i++) {
-        for (int j = 0; j < p; j++) {
-          matrix.set(i, j, matrix.get(i, j) + get(i, k) * other.get(k, j));
+    if (JBLAS_AVAILABLE) {
+      org.jblas.DoubleMatrix jblasThis = new org.jblas.DoubleMatrix(this.matrix);
+      org.jblas.DoubleMatrix jblasOther = new org.jblas.DoubleMatrix(
+          ((DenseDoubleMatrix) other).matrix);
+      org.jblas.DoubleMatrix jblasRes = new org.jblas.DoubleMatrix(
+          matrix.matrix);
+      jblasThis.mmuli(jblasOther, jblasRes);
+    } else {
+      for (int k = 0; k < n; k++) {
+        for (int i = 0; i < m; i++) {
+          for (int j = 0; j < p; j++) {
+            matrix.set(i, j, matrix.get(i, j) + get(i, k) * other.get(k, j));
+          }
         }
       }
     }
