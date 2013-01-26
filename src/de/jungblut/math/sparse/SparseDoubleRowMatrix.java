@@ -18,8 +18,8 @@ public final class SparseDoubleRowMatrix implements DoubleMatrix {
   // int -> vector, where int is the row index and vector the corresponding
   // row vector
   private final TIntObjectHashMap<SparseDoubleVector> matrix;
-  protected final int numRows;
-  protected final int numColumns;
+  private final int numRows;
+  private final int numColumns;
 
   public SparseDoubleRowMatrix(int rows, int columns) {
     this.numRows = rows;

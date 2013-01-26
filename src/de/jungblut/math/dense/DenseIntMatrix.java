@@ -8,9 +8,9 @@ import de.jungblut.math.tuple.Tuple;
 
 public final class DenseIntMatrix {
 
-  protected final int[][] matrix;
-  protected final int numRows;
-  protected final int numColumns;
+  private final int[][] matrix;
+  private final int numRows;
+  private final int numColumns;
 
   public DenseIntMatrix(int rows, int columns) {
     this.numRows = rows;

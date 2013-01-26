@@ -12,9 +12,9 @@ import de.jungblut.math.BooleanVector;
  */
 public final class DenseBooleanMatrix implements BooleanMatrix {
 
-  protected final boolean[][] matrix;
-  protected final int numRows;
-  protected final int numColumns;
+  private final boolean[][] matrix;
+  private final int numRows;
+  private final int numColumns;
 
   /**
    * Creates a new empty matrix of booleans with the number of rows and columns.

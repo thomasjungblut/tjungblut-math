@@ -16,9 +16,9 @@ import de.jungblut.math.tuple.Tuple;
  */
 public final class DenseDoubleMatrix implements DoubleMatrix {
 
-  protected final double[][] matrix;
-  protected final int numRows;
-  protected final int numColumns;
+  private final double[][] matrix;
+  private final int numRows;
+  private final int numColumns;
 
   /**
    * Creates a new empty matrix from the rows and columns.
