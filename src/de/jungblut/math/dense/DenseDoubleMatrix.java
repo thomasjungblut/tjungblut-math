@@ -102,10 +102,11 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
       this.setRowVector(i, vectorArray[i]);
     }
 
-    if (matrix.length > 0)
+    if (matrix.length > 0) {
       this.numColumns = matrix[0].length;
-    else
+    } else {
       this.numColumns = numRows;
+    }
   }
 
   /**
@@ -408,8 +409,14 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
       org.jblas.DoubleMatrix jblasOther = new org.jblas.DoubleMatrix(
           ((DenseDoubleMatrix) other).matrix);
       org.jblas.DoubleMatrix jblasRes = new org.jblas.DoubleMatrix(
-          matrix.matrix);
+          matrix.getRowCount(), this.getColumnCount());
       jblasThis.mmuli(jblasOther, jblasRes);
+      // copy the result back
+      for (int row = 0; row < matrix.getRowCount(); row++) {
+        for (int col = 0; col < matrix.getColumnCount(); col++) {
+          matrix.set(row, col, jblasRes.get(jblasRes.index(row, col)));
+        }
+      }
     } else {
       for (int k = 0; k < n; k++) {
         for (int i = 0; i < m; i++) {
