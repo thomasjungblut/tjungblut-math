@@ -17,7 +17,7 @@ import de.jungblut.math.util.OSUtils;
  */
 public final class DenseDoubleMatrix implements DoubleMatrix {
 
-  private static final boolean JBLAS_AVAILABLE = !OSUtils.isWindows64Bit();
+  public static boolean JBLAS_AVAILABLE = !OSUtils.isWindows64Bit();
 
   private final double[][] matrix;
   private final int numRows;
