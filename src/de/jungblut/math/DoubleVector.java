@@ -158,7 +158,7 @@ public interface DoubleVector {
    * @param x the given exponent.
    * @return a new vector with the result of the operation.
    */
-  public DoubleVector pow(int x);
+  public DoubleVector pow(double x);
 
   /**
    * Absolutes the vector at each element.

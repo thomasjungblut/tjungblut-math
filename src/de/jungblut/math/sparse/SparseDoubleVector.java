@@ -213,13 +213,13 @@ public class SparseDoubleVector implements DoubleVector {
   }
 
   @Override
-  public DoubleVector pow(int x) {
+  public DoubleVector pow(double x) {
     DoubleVector v = new SparseDoubleVector(this.dimension);
     Iterator<DoubleVectorElement> it = iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
       double value = 0.0d;
-      if (x == 2) {
+      if (x == 2d) {
         value = e.getValue() * e.getValue();
       } else {
         value = Math.pow(e.getValue(), x);

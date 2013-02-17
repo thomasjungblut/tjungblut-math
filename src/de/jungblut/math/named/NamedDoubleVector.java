@@ -121,7 +121,7 @@ public final class NamedDoubleVector implements DoubleVector {
   }
 
   @Override
-  public DoubleVector pow(int x) {
+  public DoubleVector pow(double x) {
     return vector.pow(x);
   }
 

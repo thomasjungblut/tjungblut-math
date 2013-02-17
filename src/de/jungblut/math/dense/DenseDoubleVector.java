@@ -225,12 +225,12 @@ public final class DenseDoubleVector implements DoubleVector {
    * @see de.jungblut.math.DoubleVector#pow(int)
    */
   @Override
-  public DoubleVector pow(int x) {
+  public DoubleVector pow(double x) {
     DenseDoubleVector v = new DenseDoubleVector(getLength());
     for (int i = 0; i < v.getLength(); i++) {
       double value = 0.0d;
       // it is faster to multiply when we having ^2
-      if (x == 2) {
+      if (x == 2d) {
         value = vector[i] * vector[i];
       } else {
         value = Math.pow(vector[i], x);
