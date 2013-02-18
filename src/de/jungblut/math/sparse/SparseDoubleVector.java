@@ -11,10 +11,15 @@ import de.jungblut.math.DoubleVector;
 import de.jungblut.math.function.DoubleDoubleVectorFunction;
 import de.jungblut.math.function.DoubleVectorFunction;
 
-public class SparseDoubleVector implements DoubleVector {
+public final class SparseDoubleVector implements DoubleVector {
 
   private final TIntDoubleHashMap vector;
   private final int dimension;
+
+  private SparseDoubleVector(int dimension, int expectedInserts) {
+    this.vector = new TIntDoubleHashMap(expectedInserts);
+    this.dimension = dimension;
+  }
 
   public SparseDoubleVector(int dimension) {
     this.vector = new TIntDoubleHashMap();
@@ -69,7 +74,8 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector apply(DoubleVectorFunction func) {
-    SparseDoubleVector newV = new SparseDoubleVector(this.dimension);
+    SparseDoubleVector newV = new SparseDoubleVector(this.dimension,
+        this.vector.size());
     Iterator<DoubleVectorElement> iterate = this.iterate();
     while (iterate.hasNext()) {
       DoubleVectorElement next = iterate.next();
@@ -83,7 +89,8 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector apply(DoubleVector other, DoubleDoubleVectorFunction func) {
-    SparseDoubleVector newV = new SparseDoubleVector(this.dimension);
+    SparseDoubleVector newV = new SparseDoubleVector(this.dimension,
+        this.vector.size());
     Iterator<DoubleVectorElement> iterate = this.iterate();
     while (iterate.hasNext()) {
       DoubleVectorElement next = iterate.next();
@@ -98,7 +105,8 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector add(DoubleVector other) {
-    DoubleVector result = new SparseDoubleVector(this.dimension);
+    DoubleVector result = new SparseDoubleVector(this.dimension,
+        this.vector.size());
     Iterator<DoubleVectorElement> iter = other.iterateNonZero();
     while (iter.hasNext()) {
       DoubleVectorElement e = iter.next();
@@ -110,7 +118,7 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector add(double scalar) {
-    DoubleVector v = new SparseDoubleVector(this.dimension);
+    DoubleVector v = new SparseDoubleVector(this.dimension, this.vector.size());
     Iterator<DoubleVectorElement> it = iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
@@ -121,7 +129,8 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector subtract(DoubleVector other) {
-    DoubleVector result = new SparseDoubleVector(this.dimension);
+    DoubleVector result = new SparseDoubleVector(this.dimension,
+        this.vector.size());
     Iterator<DoubleVectorElement> iter = other.iterateNonZero();
     while (iter.hasNext()) {
       DoubleVectorElement e = iter.next();
@@ -133,7 +142,7 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector subtract(double scalar) {
-    DoubleVector v = new SparseDoubleVector(this.dimension);
+    DoubleVector v = new SparseDoubleVector(this.dimension, this.vector.size());
     Iterator<DoubleVectorElement> it = iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
@@ -144,7 +153,7 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector subtractFrom(double scalar) {
-    DoubleVector v = new SparseDoubleVector(this.dimension);
+    DoubleVector v = new SparseDoubleVector(this.dimension, this.vector.size());
     Iterator<DoubleVectorElement> it = iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
@@ -155,7 +164,7 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector multiply(double scalar) {
-    DoubleVector v = new SparseDoubleVector(this.dimension);
+    DoubleVector v = new SparseDoubleVector(this.dimension, this.vector.size());
     Iterator<DoubleVectorElement> it = iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
@@ -181,7 +190,7 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector divide(double scalar) {
-    DoubleVector v = new SparseDoubleVector(this.dimension);
+    DoubleVector v = new SparseDoubleVector(this.dimension, this.vector.size());
     Iterator<DoubleVectorElement> it = iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
@@ -192,7 +201,7 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector divide(DoubleVector vector) {
-    DoubleVector v = new SparseDoubleVector(this.dimension);
+    DoubleVector v = new SparseDoubleVector(this.dimension, this.vector.size());
     Iterator<DoubleVectorElement> it = iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
@@ -203,7 +212,7 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector divideFrom(DoubleVector vector) {
-    DoubleVector v = new SparseDoubleVector(this.dimension);
+    DoubleVector v = new SparseDoubleVector(this.dimension, this.vector.size());
     Iterator<DoubleVectorElement> it = vector.iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
@@ -214,7 +223,7 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector pow(double x) {
-    DoubleVector v = new SparseDoubleVector(this.dimension);
+    DoubleVector v = new SparseDoubleVector(this.dimension, this.vector.size());
     Iterator<DoubleVectorElement> it = iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
@@ -231,7 +240,7 @@ public class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector sqrt() {
-    DoubleVector v = new SparseDoubleVector(this.dimension);
+    DoubleVector v = new SparseDoubleVector(this.dimension, this.vector.size());
     Iterator<DoubleVectorElement> it = iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
