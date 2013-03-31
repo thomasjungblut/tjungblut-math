@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/thomasjungblut/tjungblut-math.png)](https://travis-ci.org/thomasjungblut/tjungblut-math.png)
-
 This is my own Math package. It features some daily math operations on sparse/dense vectors and matrices.
 
 Chain Calling
