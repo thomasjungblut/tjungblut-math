@@ -626,11 +626,15 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
    * @see de.jungblut.math.DoubleMatrix#pow(int)
    */
   @Override
-  public DoubleMatrix pow(int x) {
+  public DoubleMatrix pow(double x) {
     DoubleMatrix m = new DenseDoubleMatrix(this.numRows, this.numColumns);
     for (int i = 0; i < numRows; i++) {
       for (int j = 0; j < numColumns; j++) {
-        m.set(i, j, Math.pow(matrix[i][j], x));
+        if (x == 2d) {
+          m.set(i, j, matrix[i][j] * matrix[i][j]);
+        } else {
+          m.set(i, j, Math.pow(matrix[i][j], x));
+        }
       }
     }
     return m;

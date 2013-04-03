@@ -394,14 +394,14 @@ public final class SparseDoubleRowMatrix implements DoubleMatrix {
   }
 
   @Override
-  public DoubleMatrix pow(int x) {
+  public DoubleMatrix pow(double x) {
     DoubleMatrix result = new SparseDoubleRowMatrix(this);
     for (int row : this.matrix.keys()) {
       Iterator<DoubleVectorElement> iterateNonZero = matrix.get(row)
           .iterateNonZero();
       while (iterateNonZero.hasNext()) {
         DoubleVectorElement e = iterateNonZero.next();
-        if (x != 2) {
+        if (x != 2d) {
           result.set(row, e.getIndex(), Math.pow(get(row, e.getIndex()), x));
         } else {
           double res = get(row, e.getIndex());

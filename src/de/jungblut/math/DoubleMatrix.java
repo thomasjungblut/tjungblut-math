@@ -136,7 +136,7 @@ public interface DoubleMatrix {
    * Pows each element by the given argument. <br/>
    * = (matrix element^x)
    */
-  public DoubleMatrix pow(int x);
+  public DoubleMatrix pow(double x);
 
   /**
    * Returns the maximum value of the given column.
