@@ -173,4 +173,10 @@ public interface DoubleMatrix {
    */
   public DoubleMatrix slice(int rowOffset, int rowMax, int colOffset, int colMax);
 
+  /**
+   * @return a deep copy (new object and new internal datastructures) of the
+   *         current matrix.
+   */
+  public DoubleMatrix deepCopy();
+
 }

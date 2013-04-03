@@ -30,7 +30,7 @@ public final class SparseDoubleRowMatrix implements DoubleMatrix {
   public SparseDoubleRowMatrix(DoubleMatrix mat) {
     this(mat.getRowCount(), mat.getColumnCount());
     for (int i = 0; i < numColumns; i++) {
-      setRowVector(i, mat.getRowVector(i));
+      setRowVector(i, mat.getRowVector(i).deepCopy());
     }
   }
 
@@ -439,6 +439,11 @@ public final class SparseDoubleRowMatrix implements DoubleMatrix {
   @Override
   public int[] columnIndices() {
     return fromUpTo(0, getColumnCount(), 1);
+  }
+
+  @Override
+  public DoubleMatrix deepCopy() {
+    return new SparseDoubleRowMatrix(this);
   }
 
   public static int[] fromUpTo(int from, int to, int stepsize) {

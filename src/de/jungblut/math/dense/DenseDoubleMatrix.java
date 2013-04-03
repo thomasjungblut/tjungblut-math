@@ -730,6 +730,11 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
   }
 
   @Override
+  public DoubleMatrix deepCopy() {
+    return copy(this);
+  }
+
+  @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
