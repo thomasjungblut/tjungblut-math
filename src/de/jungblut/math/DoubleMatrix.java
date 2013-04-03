@@ -67,12 +67,6 @@ public interface DoubleMatrix {
   public DoubleMatrix multiply(DoubleMatrix other);
 
   /**
-   * Multiplies this matrix per element with a binary (boolean) matrix, where
-   * false = 0 and true = 1.
-   */
-  public DoubleMatrix multiplyElementWise(BooleanMatrix other);
-
-  /**
    * Multiplies this matrix per element with a given matrix.
    */
   public DoubleMatrix multiplyElementWise(DoubleMatrix other);
@@ -82,6 +76,12 @@ public interface DoubleMatrix {
    * the sum of the rows.
    */
   public DoubleVector multiplyVector(DoubleVector v);
+
+  /**
+   * Multiplies this matrix with a given vector v. The returning vector contains
+   * the sum of the columns.
+   */
+  public DoubleVector multiplyVectorColumn(DoubleVector v);
 
   /**
    * Transposes this matrix.
@@ -157,6 +157,11 @@ public interface DoubleMatrix {
    * Returns an array of column indices existing in this matrix.
    */
   public int[] columnIndices();
+
+  /**
+   * Returns an array of row indices existing in this matrix.
+   */
+  public int[] rowIndices();
 
   /**
    * Returns true if the underlying implementation is sparse.

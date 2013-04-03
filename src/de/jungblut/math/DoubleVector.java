@@ -175,6 +175,20 @@ public interface DoubleVector {
   public DoubleVector sqrt();
 
   /**
+   * Log base e for each element.
+   * 
+   * @return a new vector.
+   */
+  public DoubleVector log();
+
+  /**
+   * Exponentiates every element with base e.
+   * 
+   * @return a new vector.
+   */
+  public DoubleVector exp();
+
+  /**
    * @return the sum of all elements in this vector.
    */
   public double sum();

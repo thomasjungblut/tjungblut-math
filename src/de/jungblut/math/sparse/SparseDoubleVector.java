@@ -250,6 +250,28 @@ public final class SparseDoubleVector implements DoubleVector {
   }
 
   @Override
+  public DoubleVector log() {
+    DoubleVector v = new SparseDoubleVector(this.dimension, this.vector.size());
+    Iterator<DoubleVectorElement> it = iterateNonZero();
+    while (it.hasNext()) {
+      DoubleVectorElement e = it.next();
+      v.set(e.getIndex(), Math.log(e.getValue()));
+    }
+    return v;
+  }
+
+  @Override
+  public DoubleVector exp() {
+    DoubleVector v = new SparseDoubleVector(this.dimension, this.vector.size());
+    Iterator<DoubleVectorElement> it = iterateNonZero();
+    while (it.hasNext()) {
+      DoubleVectorElement e = it.next();
+      v.set(e.getIndex(), Math.exp(e.getValue()));
+    }
+    return v;
+  }
+
+  @Override
   public double sum() {
     double sum = 0.0d;
     Iterator<DoubleVectorElement> it = iterateNonZero();

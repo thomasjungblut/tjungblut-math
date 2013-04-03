@@ -1,18 +1,15 @@
 package de.jungblut.math.dense;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
-import java.util.List;
+
+import org.apache.commons.math3.util.FastMath;
 
 import com.google.common.collect.AbstractIterator;
 
 import de.jungblut.math.DoubleVector;
 import de.jungblut.math.function.DoubleDoubleVectorFunction;
 import de.jungblut.math.function.DoubleVectorFunction;
-import de.jungblut.math.tuple.Tuple;
 
 /**
  * Dense double vector implementation.
@@ -54,7 +51,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#get(int)
+   * @see de.jungblut.FastMath.DoubleVector#get(int)
    */
   @Override
   public final double get(int index) {
@@ -63,7 +60,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#getLength()
+   * @see de.jungblut.FastMath.DoubleVector#getLength()
    */
   @Override
   public final int getLength() {
@@ -72,7 +69,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#getDimension()
+   * @see de.jungblut.FastMath.DoubleVector#getDimension()
    */
   @Override
   public int getDimension() {
@@ -81,7 +78,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#set(int, double)
+   * @see de.jungblut.FastMath.DoubleVector#set(int, double)
    */
   @Override
   public final void set(int index, double value) {
@@ -90,7 +87,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#apply(de.jungblut.math.function.
+   * @see de.jungblut.FastMath.DoubleVector#apply(de.jungblut.FastMath.function.
    * DoubleVectorFunction)
    */
   @Override
@@ -104,8 +101,9 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#apply(de.jungblut.math.DoubleVector,
-   * de.jungblut.math.function.DoubleDoubleVectorFunction)
+   * @see
+   * de.jungblut.FastMath.DoubleVector#apply(de.jungblut.FastMath.DoubleVector,
+   * de.jungblut.FastMath.function.DoubleDoubleVectorFunction)
    */
   @Override
   public DoubleVector apply(DoubleVector other, DoubleDoubleVectorFunction func) {
@@ -118,7 +116,8 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#add(de.jungblut.math.DoubleVector)
+   * @see
+   * de.jungblut.FastMath.DoubleVector#add(de.jungblut.FastMath.DoubleVector)
    */
   @Override
   public final DoubleVector add(DoubleVector v) {
@@ -131,7 +130,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#add(double)
+   * @see de.jungblut.FastMath.DoubleVector#add(double)
    */
   @Override
   public final DoubleVector add(double scalar) {
@@ -144,7 +143,9 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#subtract(de.jungblut.math.DoubleVector)
+   * @see
+   * de.jungblut.FastMath.DoubleVector#subtract(de.jungblut.FastMath.DoubleVector
+   * )
    */
   @Override
   public final DoubleVector subtract(DoubleVector v) {
@@ -157,7 +158,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#subtract(double)
+   * @see de.jungblut.FastMath.DoubleVector#subtract(double)
    */
   @Override
   public final DoubleVector subtract(double v) {
@@ -170,7 +171,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#subtractFrom(double)
+   * @see de.jungblut.FastMath.DoubleVector#subtractFrom(double)
    */
   @Override
   public final DoubleVector subtractFrom(double v) {
@@ -183,7 +184,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#multiply(double)
+   * @see de.jungblut.FastMath.DoubleVector#multiply(double)
    */
   @Override
   public DoubleVector multiply(double scalar) {
@@ -196,7 +197,9 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#multiply(de.jungblut.math.DoubleVector)
+   * @see
+   * de.jungblut.FastMath.DoubleVector#multiply(de.jungblut.FastMath.DoubleVector
+   * )
    */
   @Override
   public DoubleVector multiply(DoubleVector vector) {
@@ -209,7 +212,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#divide(double)
+   * @see de.jungblut.FastMath.DoubleVector#divide(double)
    */
   @Override
   public DoubleVector divide(double scalar) {
@@ -222,7 +225,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#pow(int)
+   * @see de.jungblut.FastMath.DoubleVector#pow(int)
    */
   @Override
   public DoubleVector pow(double x) {
@@ -233,7 +236,7 @@ public final class DenseDoubleVector implements DoubleVector {
       if (x == 2d) {
         value = vector[i] * vector[i];
       } else {
-        value = Math.pow(vector[i], x);
+        value = FastMath.pow(vector[i], x);
       }
       v.set(i, value);
     }
@@ -242,20 +245,20 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#sqrt()
+   * @see de.jungblut.FastMath.DoubleVector#sqrt()
    */
   @Override
   public DoubleVector sqrt() {
     DoubleVector v = new DenseDoubleVector(getLength());
     for (int i = 0; i < v.getLength(); i++) {
-      v.set(i, Math.sqrt(vector[i]));
+      v.set(i, FastMath.sqrt(vector[i]));
     }
     return v;
   }
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#sum()
+   * @see de.jungblut.FastMath.DoubleVector#sum()
    */
   @Override
   public double sum() {
@@ -268,20 +271,20 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#abs()
+   * @see de.jungblut.FastMath.DoubleVector#abs()
    */
   @Override
   public DoubleVector abs() {
     DoubleVector v = new DenseDoubleVector(getLength());
     for (int i = 0; i < v.getLength(); i++) {
-      v.set(i, Math.abs(vector[i]));
+      v.set(i, FastMath.abs(vector[i]));
     }
     return v;
   }
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#divideFrom(double)
+   * @see de.jungblut.FastMath.DoubleVector#divideFrom(double)
    */
   @Override
   public DoubleVector divideFrom(double scalar) {
@@ -327,7 +330,8 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#dot(de.jungblut.math.DoubleVector)
+   * @see
+   * de.jungblut.FastMath.DoubleVector#dot(de.jungblut.FastMath.DoubleVector)
    */
   @Override
   public double dot(DoubleVector s) {
@@ -340,7 +344,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#slice(int)
+   * @see de.jungblut.FastMath.DoubleVector#slice(int)
    */
   @Override
   public DoubleVector slice(int length) {
@@ -349,7 +353,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#slice(int, int)
+   * @see de.jungblut.FastMath.DoubleVector#slice(int, int)
    */
   @Override
   public DoubleVector slice(int start, int end) {
@@ -363,7 +367,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#sliceByLength(int, int)
+   * @see de.jungblut.FastMath.DoubleVector#sliceByLength(int, int)
    */
   @Override
   public DoubleVector sliceByLength(int start, int length) {
@@ -377,7 +381,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#max()
+   * @see de.jungblut.FastMath.DoubleVector#max()
    */
   @Override
   public double max() {
@@ -393,7 +397,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#maxIndex()
+   * @see de.jungblut.FastMath.DoubleVector#maxIndex()
    */
   @Override
   public int maxIndex() {
@@ -411,7 +415,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#min()
+   * @see de.jungblut.FastMath.DoubleVector#min()
    */
   @Override
   public double min() {
@@ -427,7 +431,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#minIndex()
+   * @see de.jungblut.FastMath.DoubleVector#minIndex()
    */
   @Override
   public int minIndex() {
@@ -450,7 +454,7 @@ public final class DenseDoubleVector implements DoubleVector {
     DenseDoubleVector v = new DenseDoubleVector(getLength());
     for (int i = 0; i < getLength(); i++) {
       double d = vector[i];
-      v.set(i, Math.rint(d));
+      v.set(i, FastMath.rint(d));
     }
     return v;
   }
@@ -462,7 +466,7 @@ public final class DenseDoubleVector implements DoubleVector {
     DenseDoubleVector v = new DenseDoubleVector(getLength());
     for (int i = 0; i < getLength(); i++) {
       double d = vector[i];
-      v.set(i, Math.round(d));
+      v.set(i, FastMath.round(d));
     }
     return v;
   }
@@ -474,14 +478,14 @@ public final class DenseDoubleVector implements DoubleVector {
     DenseDoubleVector v = new DenseDoubleVector(getLength());
     for (int i = 0; i < getLength(); i++) {
       double d = vector[i];
-      v.set(i, Math.ceil(d));
+      v.set(i, FastMath.ceil(d));
     }
     return v;
   }
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#toArray()
+   * @see de.jungblut.FastMath.DoubleVector#toArray()
    */
   @Override
   public final double[] toArray() {
@@ -490,7 +494,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#isSparse()
+   * @see de.jungblut.FastMath.DoubleVector#isSparse()
    */
   @Override
   public boolean isSparse() {
@@ -499,7 +503,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#deepCopy()
+   * @see de.jungblut.FastMath.DoubleVector#deepCopy()
    */
   @Override
   public DoubleVector deepCopy() {
@@ -511,7 +515,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#iterateNonZero()
+   * @see de.jungblut.FastMath.DoubleVector#iterateNonZero()
    */
   @Override
   public Iterator<DoubleVectorElement> iterateNonZero() {
@@ -520,11 +524,29 @@ public final class DenseDoubleVector implements DoubleVector {
 
   /*
    * (non-Javadoc)
-   * @see de.jungblut.math.DoubleVector#iterate()
+   * @see de.jungblut.FastMath.DoubleVector#iterate()
    */
   @Override
   public Iterator<DoubleVectorElement> iterate() {
     return new DefaultIterator();
+  }
+
+  @Override
+  public DoubleVector log() {
+    DoubleVector v = new DenseDoubleVector(getLength());
+    for (int i = 0; i < v.getLength(); i++) {
+      v.set(i, FastMath.log(vector[i]));
+    }
+    return v;
+  }
+
+  @Override
+  public DoubleVector exp() {
+    DoubleVector v = new DenseDoubleVector(getLength());
+    for (int i = 0; i < v.getLength(); i++) {
+      v.set(i, FastMath.exp(vector[i]));
+    }
+    return v;
   }
 
   @Override
@@ -622,36 +644,24 @@ public final class DenseDoubleVector implements DoubleVector {
   }
 
   /**
+   * @return a new vector with dimension num and a default value of 0.
+   */
+  public static DenseDoubleVector zeros(int num) {
+    return new DenseDoubleVector(num);
+  }
+
+  /**
    * @return a new vector filled from index, to index, with a given stepsize.
    */
   public static DenseDoubleVector fromUpTo(double from, double to,
       double stepsize) {
     DenseDoubleVector v = new DenseDoubleVector(
-        (int) (Math.round(((to - from) / stepsize) + 0.5)));
+        (int) (FastMath.round(((to - from) / stepsize) + 0.5)));
 
     for (int i = 0; i < v.getLength(); i++) {
       v.set(i, from + i * stepsize);
     }
     return v;
-  }
-
-  /**
-   * Some crazy sort function.
-   */
-  public static List<Tuple<Double, Integer>> sort(DoubleVector vector,
-      final Comparator<Double> scoreComparator) {
-    List<Tuple<Double, Integer>> list = new ArrayList<Tuple<Double, Integer>>(
-        vector.getLength());
-    for (int i = 0; i < vector.getLength(); i++) {
-      list.add(new Tuple<Double, Integer>(vector.get(i), i));
-    }
-    Collections.sort(list, new Comparator<Tuple<Double, Integer>>() {
-      @Override
-      public int compare(Tuple<Double, Integer> o1, Tuple<Double, Integer> o2) {
-        return scoreComparator.compare(o1.getFirst(), o2.getFirst());
-      }
-    });
-    return list;
   }
 
   @Override

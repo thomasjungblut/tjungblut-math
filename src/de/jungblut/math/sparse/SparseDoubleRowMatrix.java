@@ -5,9 +5,6 @@ import gnu.trove.map.hash.TIntObjectHashMap;
 import java.util.Iterator;
 import java.util.List;
 
-import de.jungblut.math.BooleanMatrix;
-import de.jungblut.math.BooleanVector;
-import de.jungblut.math.BooleanVector.BooleanVectorElement;
 import de.jungblut.math.DoubleMatrix;
 import de.jungblut.math.DoubleVector;
 import de.jungblut.math.DoubleVector.DoubleVectorElement;
@@ -184,22 +181,6 @@ public final class SparseDoubleRowMatrix implements DoubleMatrix {
   }
 
   @Override
-  public DoubleMatrix multiplyElementWise(BooleanMatrix other) {
-    SparseDoubleRowMatrix matrix = new SparseDoubleRowMatrix(this.numRows,
-        this.numColumns);
-    for (int col : other.columnIndices()) {
-      BooleanVector columnVector = other.getColumnVector(col);
-      Iterator<BooleanVectorElement> iterateNonZero = columnVector
-          .iterateNonZero();
-      while (iterateNonZero.hasNext()) {
-        BooleanVectorElement next = iterateNonZero.next();
-        matrix.set(next.getIndex(), col, get(next.getIndex(), col));
-      }
-    }
-    return matrix;
-  }
-
-  @Override
   public DoubleMatrix multiplyElementWise(DoubleMatrix other) {
     DoubleMatrix result = new SparseDoubleRowMatrix(this);
     for (int row : this.matrix.keys()) {
@@ -226,6 +207,22 @@ public final class SparseDoubleRowMatrix implements DoubleMatrix {
         sum += (e.getValue() * v.get(col));
       }
       result.set(col, sum);
+    }
+    return result;
+  }
+
+  @Override
+  public DoubleVector multiplyVectorColumn(DoubleVector v) {
+    DoubleVector result = new SparseDoubleVector(this.getRowCount());
+    for (int row : rowIndices()) {
+      Iterator<DoubleVectorElement> iterateNonZero = matrix.get(row)
+          .iterateNonZero();
+      double sum = 0.0d;
+      while (iterateNonZero.hasNext()) {
+        DoubleVectorElement e = iterateNonZero.next();
+        sum += (e.getValue() * v.get(row));
+      }
+      result.set(row, sum);
     }
     return result;
   }
@@ -439,6 +436,11 @@ public final class SparseDoubleRowMatrix implements DoubleMatrix {
   @Override
   public int[] columnIndices() {
     return fromUpTo(0, getColumnCount(), 1);
+  }
+
+  @Override
+  public int[] rowIndices() {
+    return matrix.keys();
   }
 
   @Override

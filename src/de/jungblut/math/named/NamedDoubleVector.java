@@ -141,6 +141,16 @@ public final class NamedDoubleVector implements DoubleVector {
   }
 
   @Override
+  public DoubleVector log() {
+    return this.vector.log();
+  }
+
+  @Override
+  public DoubleVector exp() {
+    return this.vector.exp();
+  }
+
+  @Override
   public double dot(DoubleVector s) {
     return vector.dot(s);
   }
