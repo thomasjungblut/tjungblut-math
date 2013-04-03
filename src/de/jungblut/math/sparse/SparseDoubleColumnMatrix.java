@@ -220,7 +220,7 @@ public final class SparseDoubleColumnMatrix implements DoubleMatrix {
       double sum = 0.0d;
       while (iterateNonZero.hasNext()) {
         DoubleVectorElement e = iterateNonZero.next();
-        sum += (e.getValue() * v.get(row));
+        sum += (e.getValue() * v.get(e.getIndex()));
       }
       result.set(row, sum);
     }

@@ -417,11 +417,11 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
 
   @Override
   public DoubleVector multiplyVectorColumn(DoubleVector v) {
-    DoubleVector vector = new DenseDoubleVector(this.getRowCount());
+    DoubleVector vector = new DenseDoubleVector(this.getColumnCount());
     for (int col = 0; col < numColumns; col++) {
       double sum = 0.0d;
       for (int row = 0; row < numRows; row++) {
-        sum += (matrix[row][col] * v.get(col));
+        sum += (matrix[row][col] * v.get(row));
       }
       vector.set(col, sum);
     }
