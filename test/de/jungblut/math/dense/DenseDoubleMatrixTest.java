@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import de.jungblut.math.DoubleMatrix;
 import de.jungblut.math.DoubleVector;
+import de.jungblut.math.sparse.SparseDoubleVector;
 
 public class DenseDoubleMatrixTest extends TestCase {
 
@@ -79,6 +80,20 @@ public class DenseDoubleMatrixTest extends TestCase {
     assertEquals(16.0d, multiply.get(1, 0));
     assertEquals(25.0d, multiply.get(1, 1));
     assertEquals(36.0d, multiply.get(1, 2));
+  }
+
+  @Test
+  public void testMultiplyVector() throws Exception {
+    double[][] arr = new double[][] { { 1, 2, 3 }, { 4, 5, 6 } };
+    DenseDoubleVector vec = new DenseDoubleVector(new double[] { 2, 0, 2 });
+    DenseDoubleMatrix mat = new DenseDoubleMatrix(arr);
+    DoubleVector multiply = mat.multiplyVector(vec);
+    assertEquals(8d, multiply.get(0));
+    assertEquals(20d, multiply.get(1));
+
+    multiply = mat.multiplyVector(new SparseDoubleVector(vec));
+    assertEquals(8d, multiply.get(0));
+    assertEquals(20d, multiply.get(1));
   }
 
   @Test

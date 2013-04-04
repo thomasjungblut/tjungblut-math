@@ -326,6 +326,11 @@ public interface DoubleVector {
     public final void setValue(double in) {
       this.value = in;
     }
+
+    @Override
+    public String toString() {
+      return "Index: " + index + "; Value: " + value;
+    }
   }
 
 }

@@ -2,11 +2,13 @@ package de.jungblut.math.dense;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
 import de.jungblut.math.DoubleMatrix;
 import de.jungblut.math.DoubleVector;
+import de.jungblut.math.DoubleVector.DoubleVectorElement;
 import de.jungblut.math.tuple.Tuple;
 import de.jungblut.math.util.OSUtils;
 
@@ -406,8 +408,16 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     DoubleVector vector = new DenseDoubleVector(this.getRowCount());
     for (int row = 0; row < numRows; row++) {
       double sum = 0.0d;
-      for (int col = 0; col < numColumns; col++) {
-        sum += (matrix[row][col] * v.get(col));
+      if (v.isSparse()) {
+        Iterator<DoubleVectorElement> iterateNonZero = v.iterateNonZero();
+        while (iterateNonZero.hasNext()) {
+          DoubleVectorElement next = iterateNonZero.next();
+          sum += (matrix[row][next.getIndex()] * next.getValue());
+        }
+      } else {
+        for (int col = 0; col < numColumns; col++) {
+          sum += (matrix[row][col] * v.get(col));
+        }
       }
       vector.set(row, sum);
     }
