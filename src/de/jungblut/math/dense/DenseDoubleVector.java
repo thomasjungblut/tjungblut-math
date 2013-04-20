@@ -49,6 +49,15 @@ public final class DenseDoubleVector implements DoubleVector {
     this.vector[array.length] = f1;
   }
 
+  /**
+   * Creates a new vector with the given array and the first value firstElement.
+   */
+  public DenseDoubleVector(double firstElement, double[] array) {
+    this.vector = new double[array.length + 1];
+    this.vector[0] = firstElement;
+    System.arraycopy(array, 0, this.vector, 1, array.length);
+  }
+
   /*
    * (non-Javadoc)
    * @see de.jungblut.FastMath.DoubleVector#get(int)
