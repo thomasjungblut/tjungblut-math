@@ -12,6 +12,15 @@ import de.jungblut.math.DoubleVector.DoubleVectorElement;
 public class DenseDoubleVectorTest extends TestCase {
 
   @Test
+  public void testConstructor() throws Exception {
+    double[] arr = new double[] { 1, 2, 3, 4, 5 };
+    double[] res = new double[] { 25, 1, 2, 3, 4, 5 };
+    // check if 25 was added in front
+    DenseDoubleVector vec = new DenseDoubleVector(25, arr);
+    arrayEquals(res, vec.toArray());
+  }
+
+  @Test
   public void testAccessors() throws Exception {
     double[] arr = new double[] { 1, 2, 3, 4, 5 };
     DenseDoubleVector vec = new DenseDoubleVector(arr);
@@ -39,13 +48,13 @@ public class DenseDoubleVectorTest extends TestCase {
     multiply = vec.pow(3);
     arrayEquals(res3, multiply.toArray());
   }
-  
+
   @Test
   public void testIterateNonZero() throws Exception {
     double[] arr = new double[] { 1, 2, 3, 4, 5 };
     DenseDoubleVector vec = new DenseDoubleVector(arr);
     Iterator<DoubleVectorElement> iterateNonZero = vec.iterateNonZero();
-    while(iterateNonZero.hasNext()){
+    while (iterateNonZero.hasNext()) {
       DoubleVectorElement next = iterateNonZero.next();
       assertEquals(arr[next.getIndex()], next.getValue());
     }
