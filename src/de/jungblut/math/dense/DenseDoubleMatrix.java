@@ -10,15 +10,12 @@ import de.jungblut.math.DoubleMatrix;
 import de.jungblut.math.DoubleVector;
 import de.jungblut.math.DoubleVector.DoubleVectorElement;
 import de.jungblut.math.tuple.Tuple;
-import de.jungblut.math.util.OSUtils;
 
 /**
  * Dense double matrix implementation, internally uses two dimensional double
  * arrays.
  */
 public final class DenseDoubleMatrix implements DoubleMatrix {
-
-  public static boolean JBLAS_AVAILABLE = !OSUtils.isWindows64Bit();
 
   private final double[][] matrix;
   private final int numRows;
@@ -363,7 +360,8 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     final int m = this.numRows;
     final int n = this.numColumns;
     final int p = other.getColumnCount();
-    if (JBLAS_AVAILABLE) {
+    // only execute when we have JBLAS and our matrix is bigger than 500x500
+    if (m > 500 && n > 500) {
       org.jblas.DoubleMatrix jblasThis = new org.jblas.DoubleMatrix(this.matrix);
       org.jblas.DoubleMatrix jblasOther = new org.jblas.DoubleMatrix(
           ((DenseDoubleMatrix) other).matrix);
