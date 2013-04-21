@@ -42,7 +42,10 @@ JBLAS
 -------
 
 To neglect the performance problem with large matrices/vectors, I have added JBLAS for dense matrix multiplications. 
-JBLAS is only activated when not on Windows 64bit, as there is no compiled ATLAS implementation available. 
+JBLAS is only activated on matrices that are bigger than 500 elements on every dimension. 
+On Linux (I use Ubuntu) it uses ATLAS routines and needs libgfortran3. 
+On Windows 64bit it uses lapack-lite and needs mingw64-x86_64-gcc-core and mingw64-x86_64-gfortran in the path.
+
 You can read more about the datails on the [JBLAS project page.](http://jblas.org/ "JBLAS project page.")
 
 
