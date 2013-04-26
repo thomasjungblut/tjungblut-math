@@ -221,6 +221,12 @@ public final class NamedDoubleVector implements DoubleVector {
   }
 
   @Override
+  public String toString() {
+    return "NamedDoubleVector [name=" + this.name + ", vector=" + this.vector
+        + "]";
+  }
+
+  @Override
   public int hashCode() {
     final int prime = 31;
     int result = 1;
