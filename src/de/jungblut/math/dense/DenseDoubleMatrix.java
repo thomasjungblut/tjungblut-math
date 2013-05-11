@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import org.jblas.MyNativeBlasLibraryLoader;
+
 import de.jungblut.math.DoubleMatrix;
 import de.jungblut.math.DoubleVector;
 import de.jungblut.math.DoubleVector.DoubleVectorElement;
@@ -16,6 +18,12 @@ import de.jungblut.math.tuple.Tuple;
  * arrays.
  */
 public final class DenseDoubleMatrix implements DoubleMatrix {
+
+  private static boolean JBLAS_AVAILABLE = false;
+
+  static {
+    JBLAS_AVAILABLE = MyNativeBlasLibraryLoader.loadLibraryAndCheckErrors();
+  }
 
   private final double[][] matrix;
   private final int numRows;
@@ -360,8 +368,8 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     final int m = this.numRows;
     final int n = this.numColumns;
     final int p = other.getColumnCount();
-    // only execute when we have JBLAS and our matrix is bigger than 500x500
-    if (m > 500 && n > 500) {
+    // only execute when we have JBLAS and our matrix is bigger than 50x50
+    if (JBLAS_AVAILABLE && m > 100 && n > 100) {
       org.jblas.DoubleMatrix jblasThis = new org.jblas.DoubleMatrix(this.matrix);
       org.jblas.DoubleMatrix jblasOther = new org.jblas.DoubleMatrix(
           ((DenseDoubleMatrix) other).matrix);
