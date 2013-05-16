@@ -277,7 +277,8 @@ public final class SparseDoubleRowMatrix implements DoubleMatrix {
 
   @Override
   public DoubleMatrix subtract(DoubleMatrix other) {
-    SparseDoubleRowMatrix m = new SparseDoubleRowMatrix(other);
+    SparseDoubleRowMatrix m = new SparseDoubleRowMatrix(other.getRowCount(),
+        other.getColumnCount());
 
     for (int col : this.matrix.keys()) {
       Iterator<DoubleVectorElement> iterateNonZero = matrix.get(col)

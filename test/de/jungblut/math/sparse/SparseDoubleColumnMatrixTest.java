@@ -6,6 +6,7 @@ import org.junit.Test;
 
 import de.jungblut.math.DoubleMatrix;
 import de.jungblut.math.DoubleVector;
+import de.jungblut.math.dense.DenseDoubleMatrix;
 
 public class SparseDoubleColumnMatrixTest extends TestCase {
 
@@ -63,6 +64,20 @@ public class SparseDoubleColumnMatrixTest extends TestCase {
     assertEquals(32.0d, multiply.get(0, 1));
     assertEquals(32.0d, multiply.get(1, 0));
     assertEquals(77.0d, multiply.get(1, 1));
+  }
+
+  @Test
+  public void testSubtract() throws Exception {
+    SparseDoubleColumnMatrix mat1 = new SparseDoubleColumnMatrix(
+        new DenseDoubleMatrix(new double[][] { { 1, 0, 3 }, { 0, 0, 0 },
+            { 1, 0, 0 } }));
+
+    SparseDoubleColumnMatrix mat2 = new SparseDoubleColumnMatrix(
+        new DenseDoubleMatrix(new double[][] { { 1, 0, 3 }, { 0, 0, 0 },
+            { 1, 0, 0 } }));
+
+    assertEquals(0.0, mat1.subtract(mat2).sum(), 1e-2);
+
   }
 
   @Test
