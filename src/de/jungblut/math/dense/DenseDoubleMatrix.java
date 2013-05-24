@@ -1,7 +1,6 @@
 package de.jungblut.math.dense;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
@@ -11,7 +10,6 @@ import org.jblas.MyNativeBlasLibraryLoader;
 import de.jungblut.math.DoubleMatrix;
 import de.jungblut.math.DoubleVector;
 import de.jungblut.math.DoubleVector.DoubleVectorElement;
-import de.jungblut.math.tuple.Tuple;
 
 /**
  * Dense double matrix implementation, internally uses two dimensional double
@@ -19,7 +17,10 @@ import de.jungblut.math.tuple.Tuple;
  */
 public final class DenseDoubleMatrix implements DoubleMatrix {
 
-  private static boolean JBLAS_AVAILABLE = false;
+  private static final int JBLAS_COLUMN_THRESHOLD = 100;
+  private static final int JBLAS_ROW_THRESHOLD = 100;
+
+  private static final boolean JBLAS_AVAILABLE;
 
   static {
     JBLAS_AVAILABLE = MyNativeBlasLibraryLoader.loadLibraryAndCheckErrors();
@@ -50,10 +51,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
    * @param defaultValue the default value.
    */
   public DenseDoubleMatrix(int rows, int columns, double defaultValue) {
-    this.numRows = rows;
-    this.numColumns = columns;
-    this.matrix = new double[rows][columns];
-
+    this(rows, columns);
     for (int i = 0; i < numRows; i++) {
       Arrays.fill(matrix[i], defaultValue);
     }
@@ -68,10 +66,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
    * @param rand the random instance to use.
    */
   public DenseDoubleMatrix(int rows, int columns, Random rand) {
-    this.numRows = rows;
-    this.numColumns = columns;
-    this.matrix = new double[rows][columns];
-
+    this(rows, columns);
     for (int i = 0; i < numRows; i++) {
       for (int j = 0; j < numColumns; j++) {
         matrix[i][j] = rand.nextDouble();
@@ -80,38 +75,14 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
   }
 
   /**
-   * Simple copy constructor, but does only bend the reference to this instance.
+   * Simple copy constructor, does a deep copy of the given parameter.
    * 
    * @param otherMatrix the other matrix.
    */
   public DenseDoubleMatrix(double[][] otherMatrix) {
-    this.matrix = otherMatrix;
-    this.numRows = otherMatrix.length;
-    if (matrix.length > 0) {
-      this.numColumns = matrix[0].length;
-    } else {
-      this.numColumns = numRows;
-    }
-  }
-
-  /**
-   * Generates a matrix out of a vector array. it treats the array entries as
-   * rows and the vector itself contains the values of the columns.
-   * 
-   * @param vectorArray the array of vectors.
-   */
-  public DenseDoubleMatrix(DoubleVector[] vectorArray) {
-    this.matrix = new double[vectorArray.length][];
-    this.numRows = vectorArray.length;
-
-    for (int i = 0; i < vectorArray.length; i++) {
-      this.setRowVector(i, vectorArray[i]);
-    }
-
-    if (matrix.length > 0) {
-      this.numColumns = matrix[0].length;
-    } else {
-      this.numColumns = numRows;
+    this(otherMatrix.length, otherMatrix[0].length);
+    for (int i = 0; i < otherMatrix.length; i++) {
+      System.arraycopy(otherMatrix[i], 0, matrix[i], 0, otherMatrix[i].length);
     }
   }
 
@@ -123,53 +94,26 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
    */
   public DenseDoubleMatrix(List<DoubleVector> vec) {
     this(vec.size(), vec.get(0).getDimension());
-
     int index = 0;
     for (DoubleVector value : vec) {
       matrix[index++] = value.toArray();
     }
-
   }
 
   /**
-   * Sets the first column of this matrix to the given vector.
+   * Generates a matrix out of a vector array. It treats the array entries as
+   * rows and the vector itself contains the values of the columns.
    * 
-   * @param first the new first column of the given vector
+   * @param vectorArray the array of vectors.
    */
-  public DenseDoubleMatrix(DenseDoubleVector first) {
-    this(first.getLength(), 1);
-    setColumn(0, first.toArray());
-  }
-
-  /**
-   * Copies the given double array v into the first row of this matrix, and
-   * creates this with the number of given rows and columns.
-   * 
-   * @param v the values to put into the first row.
-   * @param rows the number of rows.
-   * @param columns the number of columns.
-   */
-  public DenseDoubleMatrix(double[] v, int rows, int columns) {
-    this.matrix = new double[rows][columns];
-
-    for (int i = 0; i < rows; i++) {
-      System.arraycopy(v, i * columns, this.matrix[i], 0, columns);
-    }
-
-    int index = 0;
-    for (int col = 0; col < columns; col++) {
-      for (int row = 0; row < rows; row++) {
-        matrix[row][col] = v[index++];
-      }
-    }
-
-    this.numRows = rows;
-    this.numColumns = columns;
+  public DenseDoubleMatrix(DoubleVector[] vectorArray) {
+    this(Arrays.asList(vectorArray));
   }
 
   /**
    * Creates a new matrix with the given vector into the first column and the
-   * other matrix to the other columns.
+   * other matrix to the other columns. This is usually used in machine learning
+   * algorithms that add a bias on the zero-index column.
    * 
    * @param first the new first column.
    * @param otherMatrix the other matrix to set on from the second column.
@@ -184,16 +128,42 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     }
   }
 
+  /**
+   * Copies the given double array v into the first row of this matrix, and
+   * creates this with the number of given rows and columns.
+   * 
+   * @param v the values to put into the first row.
+   * @param rows the number of rows.
+   * @param columns the number of columns.
+   */
+  public DenseDoubleMatrix(double[] v, int rows, int columns) {
+    this(rows, columns);
+    for (int i = 0; i < rows; i++) {
+      System.arraycopy(v, i * columns, this.matrix[i], 0, columns);
+    }
+
+    int index = 0;
+    for (int col = 0; col < columns; col++) {
+      for (int row = 0; row < rows; row++) {
+        matrix[row][col] = v[index++];
+      }
+    }
+  }
+
+  /*
+   * ------------CONSTRUCTOR END------------
+   */
+
   @Override
-  public final double get(int row, int col) {
+  public double get(int row, int col) {
     return this.matrix[row][col];
   }
 
   /**
    * Gets a whole column of the matrix as a double array.
    */
-  public final double[] getColumn(int col) {
-    final double[] column = new double[numRows];
+  public double[] getColumn(int col) {
+    double[] column = new double[numRows];
     for (int r = 0; r < numRows; r++) {
       column[r] = matrix[r][col];
     }
@@ -201,12 +171,12 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
   }
 
   @Override
-  public final int getColumnCount() {
+  public int getColumnCount() {
     return numColumns;
   }
 
   @Override
-  public final DoubleVector getColumnVector(int col) {
+  public DoubleVector getColumnVector(int col) {
     return new DenseDoubleVector(getColumn(col));
   }
 
@@ -214,29 +184,29 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
    * Get the matrix as 2-dimensional double array (first dimension is the row,
    * second the column) to faster access the values.
    */
-  public final double[][] getValues() {
+  public double[][] getValues() {
     return matrix;
   }
 
   /**
    * Get a single row of the matrix as a double array.
    */
-  public final double[] getRow(int row) {
+  public double[] getRow(int row) {
     return matrix[row];
   }
 
   @Override
-  public final int getRowCount() {
+  public int getRowCount() {
     return numRows;
   }
 
   @Override
-  public final DoubleVector getRowVector(int row) {
+  public DoubleVector getRowVector(int row) {
     return new DenseDoubleVector(getRow(row));
   }
 
   @Override
-  public final void set(int row, int col, double value) {
+  public void set(int row, int col, double value) {
     this.matrix[row][col] = value;
   }
 
@@ -244,7 +214,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
    * Sets the row to a given double array. This does not copy, rather than just
    * bends the references.
    */
-  public final void setRow(int row, double[] value) {
+  public void setRow(int row, double[] value) {
     this.matrix[row] = value;
   }
 
@@ -252,7 +222,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
    * Sets the column to a given double array. This does not copy, rather than
    * just bends the references.
    */
-  public final void setColumn(int col, double[] values) {
+  public void setColumn(int col, double[] values) {
     for (int i = 0; i < getRowCount(); i++) {
       this.matrix[i][col] = values[i];
     }
@@ -268,89 +238,8 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     this.setRow(rowIndex, row.toArray());
   }
 
-  /**
-   * Returns the size of the matrix as string (ROWSxCOLUMNS).
-   */
-  public String sizeToString() {
-    return numRows + "x" + numColumns;
-  }
-
-  /**
-   * Splits the last column from this matrix. Usually used to get a prediction
-   * column from some machine learning problem.
-   * 
-   * @return a tuple of a new sliced matrix and a vector which was the last
-   *         column.
-   */
-  public final Tuple<DenseDoubleMatrix, DenseDoubleVector> splitLastColumn() {
-    DenseDoubleMatrix m = new DenseDoubleMatrix(getRowCount(),
-        getColumnCount() - 1);
-    for (int i = 0; i < getRowCount(); i++) {
-      for (int j = 0; j < getColumnCount() - 1; j++) {
-        m.set(i, j, get(i, j));
-      }
-    }
-    DenseDoubleVector v = new DenseDoubleVector(getColumn(getColumnCount() - 1));
-    return new Tuple<DenseDoubleMatrix, DenseDoubleVector>(m, v);
-  }
-
-  /**
-   * Creates two matrices out of this by the given percentage. It uses a random
-   * function to determine which rows should belong to the matrix including the
-   * given percentage amount of rows.
-   * 
-   * @param percentage A float value between 0.0f and 1.0f
-   * @return A tuple which includes two matrices, the first contains the
-   *         percentage of the rows from the original matrix (rows are chosen
-   *         randomly) and the second one contains all other rows.
-   */
-  public final Tuple<DenseDoubleMatrix, DenseDoubleMatrix> splitRandomMatrices(
-      float percentage) {
-    if (percentage < 0.0f || percentage > 1.0f) {
-      throw new IllegalArgumentException(
-          "Percentage must be between 0.0 and 1.0! Given " + percentage);
-    }
-
-    if (percentage == 1.0f) {
-      return new Tuple<DenseDoubleMatrix, DenseDoubleMatrix>(this, null);
-    } else if (percentage == 0.0f) {
-      return new Tuple<DenseDoubleMatrix, DenseDoubleMatrix>(null, this);
-    }
-
-    final Random rand = new Random(System.nanoTime());
-    int firstMatrixRowsCount = Math.round(percentage * numRows);
-
-    // we first choose needed rows number of items to pick
-    final HashSet<Integer> lowerMatrixRowIndices = new HashSet<Integer>();
-    int missingRows = firstMatrixRowsCount;
-    while (missingRows > 0) {
-      final int nextIndex = rand.nextInt(numRows);
-      if (lowerMatrixRowIndices.add(nextIndex)) {
-        missingRows--;
-      }
-    }
-
-    // make to new matrixes
-    final double[][] firstMatrix = new double[firstMatrixRowsCount][numColumns];
-    int firstMatrixIndex = 0;
-    final double[][] secondMatrix = new double[numRows - firstMatrixRowsCount][numColumns];
-    int secondMatrixIndex = 0;
-
-    // then we loop over all items and put split the matrix
-    for (int r = 0; r < numRows; r++) {
-      if (lowerMatrixRowIndices.contains(r)) {
-        firstMatrix[firstMatrixIndex++] = matrix[r];
-      } else {
-        secondMatrix[secondMatrixIndex++] = matrix[r];
-      }
-    }
-
-    return new Tuple<DenseDoubleMatrix, DenseDoubleMatrix>(
-        new DenseDoubleMatrix(firstMatrix), new DenseDoubleMatrix(secondMatrix));
-  }
-
   @Override
-  public final DenseDoubleMatrix multiply(double scalar) {
+  public DenseDoubleMatrix multiply(double scalar) {
     DenseDoubleMatrix m = new DenseDoubleMatrix(this.numRows, this.numColumns);
     for (int i = 0; i < numRows; i++) {
       for (int j = 0; j < numColumns; j++) {
@@ -361,15 +250,16 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
   }
 
   @Override
-  public final DoubleMatrix multiply(DoubleMatrix other) {
+  public DoubleMatrix multiply(DoubleMatrix other) {
     DenseDoubleMatrix matrix = new DenseDoubleMatrix(this.getRowCount(),
         other.getColumnCount());
 
-    final int m = this.numRows;
-    final int n = this.numColumns;
-    final int p = other.getColumnCount();
+    int m = this.numRows;
+    int n = this.numColumns;
+    int p = other.getColumnCount();
     // only execute when we have JBLAS and our matrix is bigger than 50x50
-    if (JBLAS_AVAILABLE && m > 100 && n > 100) {
+    if (JBLAS_AVAILABLE && m > JBLAS_ROW_THRESHOLD
+        && n > JBLAS_COLUMN_THRESHOLD) {
       org.jblas.DoubleMatrix jblasThis = new org.jblas.DoubleMatrix(this.matrix);
       org.jblas.DoubleMatrix jblasOther = new org.jblas.DoubleMatrix(
           ((DenseDoubleMatrix) other).matrix);
@@ -396,7 +286,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
   }
 
   @Override
-  public final DoubleMatrix multiplyElementWise(DoubleMatrix other) {
+  public DoubleMatrix multiplyElementWise(DoubleMatrix other) {
     DenseDoubleMatrix matrix = new DenseDoubleMatrix(this.numRows,
         this.numColumns);
 
@@ -410,7 +300,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
   }
 
   @Override
-  public final DoubleVector multiplyVector(DoubleVector v) {
+  public DoubleVector multiplyVector(DoubleVector v) {
     DoubleVector vector = new DenseDoubleVector(this.getRowCount());
     for (int row = 0; row < numRows; row++) {
       double sum = 0.0d;
@@ -494,7 +384,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     DenseDoubleMatrix cop = new DenseDoubleMatrix(this.getRowCount(),
         this.getColumnCount());
     for (int i = 0; i < this.getColumnCount(); i++) {
-      cop.setColumn(i, getColumnVector(i).subtract(vec.get(i)).toArray());
+      cop.setColumnVector(i, getColumnVector(i).subtract(vec));
     }
     return cop;
   }
@@ -504,7 +394,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     DoubleMatrix cop = new DenseDoubleMatrix(this.getRowCount(),
         this.getColumnCount());
     for (int i = 0; i < this.getColumnCount(); i++) {
-      cop.setColumnVector(i, getColumnVector(i).divide(vec.get(i)));
+      cop.setColumnVector(i, getColumnVector(i).divide(vec));
     }
     return cop;
   }
@@ -632,38 +522,12 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
 
   @Override
   public DoubleMatrix deepCopy() {
-    return copy(this);
-  }
-
-  @Override
-  public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + Arrays.hashCode(matrix);
-    result = prime * result + numColumns;
-    result = prime * result + numRows;
-    return result;
-  }
-
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj)
-      return true;
-    if (obj == null)
-      return false;
-    if (getClass() != obj.getClass())
-      return false;
-    DenseDoubleMatrix other = (DenseDoubleMatrix) obj;
-    if (!Arrays.deepEquals(matrix, other.matrix))
-      return false;
-    if (numColumns != other.numColumns)
-      return false;
-    return numRows == other.numRows;
+    return new DenseDoubleMatrix(getValues());
   }
 
   @Override
   public String toString() {
-    if (numRows < 10) {
+    if (numRows * numColumns < 100) {
       StringBuilder sb = new StringBuilder();
       for (int i = 0; i < numRows; i++) {
         sb.append(Arrays.toString(matrix[i]));
@@ -671,8 +535,15 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
       }
       return sb.toString();
     } else {
-      return numRows + "x" + numColumns;
+      return sizeToString();
     }
+  }
+
+  /**
+   * Returns the size of the matrix as string (ROWSxCOLUMNS).
+   */
+  public String sizeToString() {
+    return numRows + "x" + numColumns;
   }
 
   /**
@@ -686,46 +557,6 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     }
 
     return m;
-  }
-
-  /**
-   * Deep copies the given matrix into a new returned one.
-   */
-  public static DenseDoubleMatrix copy(DenseDoubleMatrix matrix) {
-    final double[][] src = matrix.getValues();
-    final double[][] dest = new double[matrix.getRowCount()][matrix
-        .getColumnCount()];
-
-    for (int i = 0; i < dest.length; i++)
-      System.arraycopy(src[i], 0, dest[i], 0, src[i].length);
-
-    return new DenseDoubleMatrix(dest);
-  }
-
-  /**
-   * Some strange function I found in octave but I don't know what it was named.
-   * It does however multiply the elements from the transposed vector and the
-   * normal vector and sets it into the according indices of a new constructed
-   * matrix.
-   */
-  public static DenseDoubleMatrix multiplyTransposedVectors(
-      DoubleVector transposed, DoubleVector normal) {
-    DenseDoubleMatrix m = new DenseDoubleMatrix(transposed.getLength(),
-        normal.getLength());
-    for (int row = 0; row < transposed.getLength(); row++) {
-      for (int col = 0; col < normal.getLength(); col++) {
-        m.set(row, col, transposed.get(row) * normal.get(col));
-      }
-    }
-
-    return m;
-  }
-
-  /**
-   * Just a absolute error function.
-   */
-  public static double error(DenseDoubleMatrix a, DenseDoubleMatrix b) {
-    return a.subtract(b).sum();
   }
 
 }
