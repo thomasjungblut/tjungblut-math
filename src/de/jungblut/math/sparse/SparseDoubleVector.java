@@ -2,8 +2,11 @@ package de.jungblut.math.sparse;
 
 import gnu.trove.iterator.TIntDoubleIterator;
 import gnu.trove.map.hash.TIntDoubleHashMap;
+import gnu.trove.set.hash.TIntHashSet;
 
 import java.util.Iterator;
+
+import org.apache.commons.math3.util.FastMath;
 
 import com.google.common.collect.AbstractIterator;
 
@@ -11,21 +14,44 @@ import de.jungblut.math.DoubleVector;
 import de.jungblut.math.function.DoubleDoubleVectorFunction;
 import de.jungblut.math.function.DoubleVectorFunction;
 
+/**
+ * Sparse double vector backed by a trove hashmap.
+ * 
+ * @author thomas.jungblut
+ * 
+ */
 public final class SparseDoubleVector implements DoubleVector {
 
+  private static final double SPARSE_DEFAULT_VALUE = 0d;
   private final TIntDoubleHashMap vector;
   private final int dimension;
 
+  /**
+   * Constructs a new {@link SparseDoubleVector}.
+   * 
+   * @param dimension the expected dimensionality of the vector.
+   * @param expectedInserts the expected number of elements to be inserted.
+   */
   private SparseDoubleVector(int dimension, int expectedInserts) {
     this.vector = new TIntDoubleHashMap(expectedInserts);
     this.dimension = dimension;
   }
 
+  /**
+   * Constructs a new {@link SparseDoubleVector}.
+   * 
+   * @param dimension the expected dimensionality of the vector.
+   */
   public SparseDoubleVector(int dimension) {
     this.vector = new TIntDoubleHashMap();
     this.dimension = dimension;
   }
 
+  /**
+   * Constructs a new {@link SparseDoubleVector}.
+   * 
+   * @param v the given vector to copy.
+   */
   public SparseDoubleVector(DoubleVector v) {
     this(v.getDimension());
     Iterator<DoubleVectorElement> iterateNonZero = v.iterateNonZero();
@@ -35,6 +61,11 @@ public final class SparseDoubleVector implements DoubleVector {
     }
   }
 
+  /**
+   * Constructs a new {@link SparseDoubleVector}.
+   * 
+   * @param arr the given vector to copy.
+   */
   public SparseDoubleVector(double[] arr) {
     this(arr.length);
     for (int i = 0; i < arr.length; i++) {
@@ -42,12 +73,35 @@ public final class SparseDoubleVector implements DoubleVector {
     }
   }
 
-  public SparseDoubleVector(double[] arr, double f1) {
+  /**
+   * Creates a new vector with the given array and the first value firstElement.
+   * 
+   * @param firstElement the element that will be at index 0 (first position) in
+   *          the resulting vector.
+   * @param array the rest of the array for the vector.
+   */
+  public SparseDoubleVector(double firstElement, double[] arr) {
     this(arr.length + 1);
-    set(0, f1);
-    for (int i = 1; i < arr.length; i++) {
-      set(i, arr[i]);
+    set(0, firstElement);
+    for (int i = 0; i < arr.length; i++) {
+      set(i + 1, arr[i]);
     }
+  }
+
+  /**
+   * Creates a new vector with the given array and the last value 'lastValue'.
+   * This resulting vector will be of size array.length+1.
+   * 
+   * @param array the first part of the vector.
+   * @param lastValue the element that will be at index length-1 (last position)
+   *          in the resulting vector.
+   */
+  public SparseDoubleVector(double[] array, double lastValue) {
+    this(array.length + 1);
+    for (int i = 0; i < array.length; i++) {
+      set(i, array[i]);
+    }
+    set(array.length, lastValue);
   }
 
   @Override
@@ -67,7 +121,7 @@ public final class SparseDoubleVector implements DoubleVector {
 
   @Override
   public void set(int index, double value) {
-    if (value != 0d) {
+    if (value != SPARSE_DEFAULT_VALUE) {
       vector.put(index, value);
     }
   }
@@ -80,9 +134,7 @@ public final class SparseDoubleVector implements DoubleVector {
     while (iterate.hasNext()) {
       DoubleVectorElement next = iterate.next();
       double res = func.calculate(next.getIndex(), next.getValue());
-      if (res != 0.0d) {
-        newV.set(next.getIndex(), res);
-      }
+      newV.set(next.getIndex(), res);
     }
     return newV;
   }
@@ -96,9 +148,7 @@ public final class SparseDoubleVector implements DoubleVector {
       DoubleVectorElement next = iterate.next();
       double res = func.calculate(next.getIndex(), next.getValue(),
           other.get(next.getIndex()));
-      if (res != 0.0d) {
-        newV.set(next.getIndex(), res);
-      }
+      newV.set(next.getIndex(), res);
     }
     return newV;
   }
@@ -108,10 +158,21 @@ public final class SparseDoubleVector implements DoubleVector {
     DoubleVector result = new SparseDoubleVector(this.dimension,
         this.vector.size());
     Iterator<DoubleVectorElement> iter = other.iterateNonZero();
+    TIntHashSet calculated = new TIntHashSet();
     while (iter.hasNext()) {
       DoubleVectorElement e = iter.next();
       int index = e.getIndex();
+      calculated.add(index);
       result.set(index, this.get(index) + e.getValue());
+    }
+
+    iter = iterateNonZero();
+    while (iter.hasNext()) {
+      DoubleVectorElement e = iter.next();
+      int index = e.getIndex();
+      if (!calculated.contains(index)) {
+        result.set(index, e.getValue() + other.get(index));
+      }
     }
     return result;
   }
@@ -119,7 +180,7 @@ public final class SparseDoubleVector implements DoubleVector {
   @Override
   public DoubleVector add(double scalar) {
     DoubleVector v = new SparseDoubleVector(this.dimension, this.vector.size());
-    Iterator<DoubleVectorElement> it = iterateNonZero();
+    Iterator<DoubleVectorElement> it = iterate();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
       v.set(e.getIndex(), e.getValue() + scalar);
@@ -132,18 +193,30 @@ public final class SparseDoubleVector implements DoubleVector {
     DoubleVector result = new SparseDoubleVector(this.dimension,
         this.vector.size());
     Iterator<DoubleVectorElement> iter = other.iterateNonZero();
+    TIntHashSet calculated = new TIntHashSet();
     while (iter.hasNext()) {
       DoubleVectorElement e = iter.next();
       int index = e.getIndex();
+      calculated.add(index);
       result.set(index, this.get(index) - e.getValue());
     }
+
+    iter = iterateNonZero();
+    while (iter.hasNext()) {
+      DoubleVectorElement e = iter.next();
+      int index = e.getIndex();
+      if (!calculated.contains(index)) {
+        result.set(index, e.getValue() - other.get(index));
+      }
+    }
+
     return result;
   }
 
   @Override
   public DoubleVector subtract(double scalar) {
     DoubleVector v = new SparseDoubleVector(this.dimension, this.vector.size());
-    Iterator<DoubleVectorElement> it = iterateNonZero();
+    Iterator<DoubleVectorElement> it = iterate();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
       v.set(e.getIndex(), e.getValue() - scalar);
@@ -154,7 +227,7 @@ public final class SparseDoubleVector implements DoubleVector {
   @Override
   public DoubleVector subtractFrom(double scalar) {
     DoubleVector v = new SparseDoubleVector(this.dimension, this.vector.size());
-    Iterator<DoubleVectorElement> it = iterateNonZero();
+    Iterator<DoubleVectorElement> it = iterate();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
       v.set(e.getIndex(), scalar - e.getValue());
@@ -176,6 +249,8 @@ public final class SparseDoubleVector implements DoubleVector {
   @Override
   public DoubleVector multiply(DoubleVector s) {
     DoubleVector vec = new SparseDoubleVector(s.getDimension());
+    // take a shortcut by just iterating over the non-zero elements of the
+    // smaller vector of both multiplicants.
     DoubleVector smallestVector = s.getLength() < getLength() ? s : this;
     DoubleVector largerVector = smallestVector == this ? s : this;
     Iterator<DoubleVectorElement> it = smallestVector.iterateNonZero();
@@ -231,7 +306,7 @@ public final class SparseDoubleVector implements DoubleVector {
       if (x == 2d) {
         value = e.getValue() * e.getValue();
       } else {
-        value = Math.pow(e.getValue(), x);
+        value = FastMath.pow(e.getValue(), x);
       }
       v.set(e.getIndex(), value);
     }
@@ -244,7 +319,7 @@ public final class SparseDoubleVector implements DoubleVector {
     Iterator<DoubleVectorElement> it = iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
-      v.set(e.getIndex(), Math.sqrt(e.getValue()));
+      v.set(e.getIndex(), FastMath.sqrt(e.getValue()));
     }
     return v;
   }
@@ -255,7 +330,7 @@ public final class SparseDoubleVector implements DoubleVector {
     Iterator<DoubleVectorElement> it = iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
-      v.set(e.getIndex(), Math.log(e.getValue()));
+      v.set(e.getIndex(), FastMath.log(e.getValue()));
     }
     return v;
   }
@@ -266,7 +341,7 @@ public final class SparseDoubleVector implements DoubleVector {
     Iterator<DoubleVectorElement> it = iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
-      v.set(e.getIndex(), Math.exp(e.getValue()));
+      v.set(e.getIndex(), FastMath.exp(e.getValue()));
     }
     return v;
   }
@@ -288,7 +363,7 @@ public final class SparseDoubleVector implements DoubleVector {
     Iterator<DoubleVectorElement> it = v.iterateNonZero();
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
-      v.set(e.getIndex(), Math.abs(e.getValue()));
+      v.set(e.getIndex(), FastMath.abs(e.getValue()));
     }
     return v;
   }
@@ -307,6 +382,8 @@ public final class SparseDoubleVector implements DoubleVector {
   @Override
   public double dot(DoubleVector s) {
     double dotProduct = 0.0d;
+    // take a shortcut by just iterating over the non-zero elements of the
+    // smaller vector of both multiplicants.
     DoubleVector smallestVector = s.getLength() < getLength() ? s : this;
     DoubleVector largerVector = smallestVector == this ? s : this;
     Iterator<DoubleVectorElement> it = smallestVector.iterateNonZero();
@@ -326,20 +403,13 @@ public final class SparseDoubleVector implements DoubleVector {
   }
 
   @Override
-  public boolean isSparse() {
-    return true;
-  }
-
-  @Override
   public DoubleVector slice(int start, int end) {
-    DoubleVector nv = new SparseDoubleVector(this.dimension);
+    DoubleVector nv = new SparseDoubleVector(end - start);
     Iterator<DoubleVectorElement> iterateNonZero = iterateNonZero();
     while (iterateNonZero.hasNext()) {
       DoubleVectorElement next = iterateNonZero.next();
-      if (next.getIndex() < end) {
+      if (next.getIndex() >= start && next.getIndex() < end) {
         nv.set(next.getIndex() - start, next.getValue());
-      } else {
-        break;
       }
     }
     return nv;
@@ -347,15 +417,13 @@ public final class SparseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector sliceByLength(int start, int length) {
-    DoubleVector nv = new SparseDoubleVector(this.dimension);
+    DoubleVector nv = new SparseDoubleVector(length);
     Iterator<DoubleVectorElement> iterateNonZero = iterateNonZero();
     final int endIndex = start + length;
     while (iterateNonZero.hasNext()) {
       DoubleVectorElement next = iterateNonZero.next();
-      if (next.getIndex() >= start && next.getIndex() > endIndex) {
+      if (next.getIndex() >= start && next.getIndex() < endIndex) {
         nv.set(next.getIndex() - start, next.getValue());
-      } else {
-        break;
       }
     }
     return nv;
@@ -430,7 +498,7 @@ public final class SparseDoubleVector implements DoubleVector {
 
   @Override
   public String toString() {
-    if (getLength() < 20) {
+    if (getLength() < 50) {
       return vector.toString();
     } else {
       return getDimension() + "x1";
@@ -441,7 +509,7 @@ public final class SparseDoubleVector implements DoubleVector {
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((vector == null) ? 0 : vector.hashCode());
+    result = prime * result + vector.hashCode();
     return result;
   }
 
@@ -454,10 +522,7 @@ public final class SparseDoubleVector implements DoubleVector {
     if (getClass() != obj.getClass())
       return false;
     SparseDoubleVector other = (SparseDoubleVector) obj;
-    if (vector == null) {
-      if (other.vector != null)
-        return false;
-    } else if (!vector.equals(other.vector))
+    if (!vector.equals(other.vector))
       return false;
     return true;
   }
@@ -524,6 +589,11 @@ public final class SparseDoubleVector implements DoubleVector {
   @Override
   public boolean isNamed() {
     return false;
+  }
+
+  @Override
+  public boolean isSparse() {
+    return true;
   }
 
   @Override

@@ -56,7 +56,7 @@ public interface DoubleVector {
 
   /**
    * Apply a given {@link DoubleDoubleVectorFunction} to this vector and the
-   * other given vector.
+   * other given vector. Both vectors must match in dimensions.
    * 
    * @param other the other vector.
    * @param func the function to apply on this and the other vector.
