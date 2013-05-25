@@ -181,10 +181,11 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
   }
 
   /**
-   * Get the matrix as 2-dimensional double array (first dimension is the row,
-   * second the column) to faster access the values.
+   * Returns the internal representation two dimensional array, so be careful as
+   * no defensive copy is made.
    */
-  public double[][] getValues() {
+  @Override
+  public double[][] toArray() {
     return matrix;
   }
 
@@ -300,7 +301,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
   }
 
   @Override
-  public DoubleVector multiplyVector(DoubleVector v) {
+  public DoubleVector multiplyVectorRow(DoubleVector v) {
     DoubleVector vector = new DenseDoubleVector(this.getRowCount());
     for (int row = 0; row < numRows; row++) {
       double sum = 0.0d;
@@ -522,7 +523,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
 
   @Override
   public DoubleMatrix deepCopy() {
-    return new DenseDoubleMatrix(getValues());
+    return new DenseDoubleMatrix(toArray());
   }
 
   @Override

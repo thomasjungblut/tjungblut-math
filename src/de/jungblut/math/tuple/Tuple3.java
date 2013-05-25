@@ -18,11 +18,11 @@ public final class Tuple3<FIRST, SECOND, THIRD> implements
     this.third = third;
   }
 
-  public final FIRST getFirst() {
+  public FIRST getFirst() {
     return first;
   }
 
-  public final SECOND getSecond() {
+  public SECOND getSecond() {
     return second;
   }
 
@@ -34,7 +34,8 @@ public final class Tuple3<FIRST, SECOND, THIRD> implements
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((first == null) ? 0 : first.hashCode());
+    result = prime * result
+        + ((this.first == null) ? 0 : this.first.hashCode());
     return result;
   }
 
@@ -48,10 +49,10 @@ public final class Tuple3<FIRST, SECOND, THIRD> implements
       return false;
     @SuppressWarnings("rawtypes")
     Tuple3 other = (Tuple3) obj;
-    if (first == null) {
+    if (this.first == null) {
       if (other.first != null)
         return false;
-    } else if (!first.equals(other.first))
+    } else if (!this.first.equals(other.first))
       return false;
     return true;
   }

@@ -16,11 +16,11 @@ public final class Tuple<FIRST, SECOND> implements
     this.second = second;
   }
 
-  public final FIRST getFirst() {
+  public FIRST getFirst() {
     return first;
   }
 
-  public final SECOND getSecond() {
+  public SECOND getSecond() {
     return second;
   }
 
@@ -28,7 +28,8 @@ public final class Tuple<FIRST, SECOND> implements
   public int hashCode() {
     final int prime = 31;
     int result = 1;
-    result = prime * result + ((first == null) ? 0 : first.hashCode());
+    result = prime * result
+        + ((this.first == null) ? 0 : this.first.hashCode());
     return result;
   }
 
@@ -42,10 +43,10 @@ public final class Tuple<FIRST, SECOND> implements
       return false;
     @SuppressWarnings("rawtypes")
     Tuple other = (Tuple) obj;
-    if (first == null) {
+    if (this.first == null) {
       if (other.first != null)
         return false;
-    } else if (!first.equals(other.first))
+    } else if (!this.first.equals(other.first))
       return false;
     return true;
   }

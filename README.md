@@ -1,5 +1,10 @@
 This is my own Math package. It features some daily math operations on sparse/dense vectors and matrices.
 
+Parts of this library are also featured in Apache Hama's ML module and power several algorithms there.
+
+I have worked on the test coverage and received 100% instruction coverage on the core math classes in the latest 1.1 version.
+Note that test coverage is not a very good metric for bug-freeness as many tests state implicit assertions.
+
 Chain Calling
 -------
 
@@ -75,3 +80,7 @@ You can simply build with:
 > mvn clean package install
 
 The created jar contains debuggable code + sources.
+
+If you want to skip testcases you can use:
+
+> mvn clean package install -DskipTests

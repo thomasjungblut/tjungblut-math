@@ -281,15 +281,16 @@ public class SparseDoubleVectorTest extends TestCase {
 
     assertEquals(5d, v.max());
     assertEquals(8, v.maxIndex());
+
   }
 
   @Test
   public void testMin() {
     DoubleVector v = new SparseDoubleVector(new double[] { 2, -1, 3, 0, 0, 0,
         0, 0, 4, 5 });
-
     assertEquals(-1d, v.min());
     assertEquals(1, v.minIndex());
+
   }
 
   @Test
@@ -327,6 +328,14 @@ public class SparseDoubleVectorTest extends TestCase {
 
     assertEquals(2, set.size());
 
+  }
+
+  @Test
+  public void testDeepCopy() {
+    SparseDoubleVector mat = new SparseDoubleVector(new double[] { 1, 0 });
+    DoubleVector deepCopy = mat.deepCopy();
+    assertNotSame(mat, deepCopy);
+    arrayEquals(deepCopy.toArray(), mat.toArray());
   }
 
   public void arrayEquals(double[] left, double[] right) {

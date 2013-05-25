@@ -433,11 +433,18 @@ public final class SparseDoubleVector implements DoubleVector {
   public double max() {
     double res = -Double.MAX_VALUE;
     Iterator<DoubleVectorElement> it = this.iterateNonZero();
+    int iterated = 0;
     while (it.hasNext()) {
       DoubleVectorElement e = it.next();
       if (res < e.getValue()) {
         res = e.getValue();
       }
+      iterated++;
+    }
+
+    // at the end check for zero, because we have skipped zero elements
+    if (iterated != getDimension() && res < 0d) {
+      res = 0d;
     }
     return res;
   }
@@ -452,6 +459,7 @@ public final class SparseDoubleVector implements DoubleVector {
         res = e.getValue();
       }
     }
+
     return res;
   }
 
@@ -467,6 +475,7 @@ public final class SparseDoubleVector implements DoubleVector {
         index = e.getIndex();
       }
     }
+
     return index;
   }
 

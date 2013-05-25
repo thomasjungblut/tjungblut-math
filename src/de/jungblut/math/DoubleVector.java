@@ -233,22 +233,28 @@ public interface DoubleVector {
   public DoubleVector sliceByLength(int start, int length);
 
   /**
-   * @return the maximum element value in this vector.
+   * @return the maximum element value in this vector. Note that on sparse
+   *         instances you may not see zero as the maximum.
    */
   public double max();
 
   /**
-   * @return the minimum element value in this vector.
+   * @return the minimum element value in this vector. Note that on sparse
+   *         instances you may not see zero as the minimum.
    */
   public double min();
 
   /**
    * @return the index where the element value in this vector is the maximum.
+   *         Note that on sparse instances you may not see indices that contain
+   *         a zero as the maximum.
    */
   public int maxIndex();
 
   /**
-   * @return the index where the element value in this vector is the minimum.
+   * @return the index where the element value in this vector is the
+   *         minimum.Note that on sparse instances you may not see indices that
+   *         contain a zero as the minimum.
    */
   public int minIndex();
 
@@ -294,7 +300,7 @@ public interface DoubleVector {
 
   /**
    * Class for iteration of elements, consists of an index and a value at this
-   * index. Can be reused for performance purposes.
+   * index. May be reused for performance/GC purposes.
    */
   public static final class DoubleVectorElement {
 
@@ -305,31 +311,25 @@ public interface DoubleVector {
       super();
     }
 
-    public DoubleVectorElement(int index, double value) {
-      super();
-      this.index = index;
-      this.value = value;
-    }
-
-    public final int getIndex() {
+    public int getIndex() {
       return index;
     }
 
-    public final double getValue() {
+    public double getValue() {
       return value;
     }
 
-    public final void setIndex(int in) {
+    public void setIndex(int in) {
       this.index = in;
     }
 
-    public final void setValue(double in) {
+    public void setValue(double in) {
       this.value = in;
     }
 
     @Override
     public String toString() {
-      return "Index: " + index + "; Value: " + value;
+      return index + " -> " + value;
     }
   }
 

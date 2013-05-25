@@ -41,13 +41,13 @@ public class DenseDoubleMatrixTest extends TestCase {
     mat = new DenseDoubleMatrix(rows);
     assertEquals(3, mat.getRowCount());
     assertEquals(2, mat.getColumnCount());
-    matrixEquals(result, ((DenseDoubleMatrix) mat).getValues());
+    matrixEquals(result, ((DenseDoubleMatrix) mat).toArray());
 
     DoubleVector[] array = rows.toArray(new DoubleVector[rows.size()]);
     mat = new DenseDoubleMatrix(array);
     assertEquals(3, mat.getRowCount());
     assertEquals(2, mat.getColumnCount());
-    matrixEquals(result, ((DenseDoubleMatrix) mat).getValues());
+    matrixEquals(result, ((DenseDoubleMatrix) mat).toArray());
 
     mat = new DenseDoubleMatrix(2, 2);
 
@@ -65,7 +65,7 @@ public class DenseDoubleMatrixTest extends TestCase {
     double[] data = new double[] { 2, 3, 4, 5, 6, 7 };
     mat = new DenseDoubleMatrix(data, 3, 2);
     result = new double[][] { { 2d, 5d }, { 3d, 6d }, { 4d, 7d } };
-    matrixEquals(result, ((DenseDoubleMatrix) mat).getValues());
+    matrixEquals(result, ((DenseDoubleMatrix) mat).toArray());
   }
 
   @Test
@@ -108,7 +108,7 @@ public class DenseDoubleMatrixTest extends TestCase {
     }
 
     mat.setRowVector(1, new DenseDoubleVector(new double[] { 2, 3, 4 }));
-    arrayEquals(mat.getValues()[0], arr[0]);
+    arrayEquals(mat.toArray()[0], arr[0]);
 
     mat.setColumnVector(1, new DenseDoubleVector(new double[] { 2, 4 }));
     arrayEquals(mat.getColumnVector(0).toArray(), new double[] { 1, 2 });
@@ -179,11 +179,11 @@ public class DenseDoubleMatrixTest extends TestCase {
     double[][] arr = new double[][] { { 1, 2, 3 }, { 4, 5, 6 } };
     DenseDoubleVector vec = new DenseDoubleVector(new double[] { 2, 0, 2 });
     DenseDoubleMatrix mat = new DenseDoubleMatrix(arr);
-    DoubleVector multiply = mat.multiplyVector(vec);
+    DoubleVector multiply = mat.multiplyVectorRow(vec);
     assertEquals(8d, multiply.get(0));
     assertEquals(20d, multiply.get(1));
 
-    multiply = mat.multiplyVector(new SparseDoubleVector(vec));
+    multiply = mat.multiplyVectorRow(new SparseDoubleVector(vec));
     assertEquals(8d, multiply.get(0));
     assertEquals(20d, multiply.get(1));
   }
@@ -194,15 +194,15 @@ public class DenseDoubleMatrixTest extends TestCase {
     double[][] result = new double[][] { { 1d, 1d, 1d }, { 1d, 1d, 1d } };
     DenseDoubleMatrix mat = new DenseDoubleMatrix(arr);
     DenseDoubleMatrix multiply = (DenseDoubleMatrix) mat.divide(mat);
-    matrixEquals(multiply.getValues(), result);
+    matrixEquals(multiply.toArray(), result);
 
     multiply = (DenseDoubleMatrix) mat.divide(new DenseDoubleVector(
         new double[] { 2d, 2d }));
     result = new double[][] { { 0.5d, 1d, 1.5d }, { 2d, 2.5d, 3d } };
-    matrixEquals(multiply.getValues(), result);
+    matrixEquals(multiply.toArray(), result);
 
     multiply = (DenseDoubleMatrix) mat.divide(2d);
-    matrixEquals(multiply.getValues(), result);
+    matrixEquals(multiply.toArray(), result);
 
   }
 
@@ -213,22 +213,22 @@ public class DenseDoubleMatrixTest extends TestCase {
 
     DoubleMatrix subtract = mat.subtract(2d);
     double[][] result = new double[][] { { -1, 0, 1 }, { 2, 3, 4 } };
-    matrixEquals(result, ((DenseDoubleMatrix) subtract).getValues());
+    matrixEquals(result, subtract.toArray());
 
     subtract = mat.subtractBy(2d);
     result = new double[][] { { 1, 0, -1 }, { -2, -3, -4 } };
-    matrixEquals(result, ((DenseDoubleMatrix) subtract).getValues());
+    matrixEquals(result, subtract.toArray());
 
     double[][] arr2 = new double[][] { { 1, 2, 3 }, { 4, 5, 6 } };
     DenseDoubleMatrix mat2 = new DenseDoubleMatrix(arr2);
     result = new double[][] { { 0, 0, 0 }, { 0, 0, 0 } };
     subtract = mat.subtract(mat2);
-    matrixEquals(result, ((DenseDoubleMatrix) subtract).getValues());
+    matrixEquals(result, subtract.toArray());
 
     DoubleVector column = new DenseDoubleVector(new double[] { 1, 1 });
     subtract = mat.subtract(column);
     result = new double[][] { { 0, 1, 2 }, { 3, 4, 5 } };
-    matrixEquals(result, ((DenseDoubleMatrix) subtract).getValues());
+    matrixEquals(result, subtract.toArray());
 
   }
 
@@ -238,7 +238,7 @@ public class DenseDoubleMatrixTest extends TestCase {
     DenseDoubleMatrix mat = new DenseDoubleMatrix(arr);
     double[][] result = new double[][] { { 2, 4, 6 }, { 8, 10, 12 } };
     DenseDoubleMatrix add = (DenseDoubleMatrix) mat.add(mat);
-    matrixEquals(result, add.getValues());
+    matrixEquals(result, add.toArray());
 
   }
 
@@ -290,10 +290,13 @@ public class DenseDoubleMatrixTest extends TestCase {
   @Test
   public void testSlicing() {
     double[][] arr = new double[][] { { 1, 2, 3 }, { 4, 5, 6 } };
+    double[][] res = new double[][] { { 1, 2 } };
     DenseDoubleMatrix mat = new DenseDoubleMatrix(arr);
     DoubleMatrix slice = mat.slice(1, 2);
     assertEquals(1, slice.getRowCount());
     assertEquals(2, slice.getColumnCount());
+
+    matrixEquals(res, slice.toArray());
   }
 
   @Test
@@ -326,7 +329,7 @@ public class DenseDoubleMatrixTest extends TestCase {
     DenseDoubleMatrix mat = new DenseDoubleMatrix(arr);
     DoubleMatrix deepCopy = mat.deepCopy();
     assertNotSame(mat, deepCopy);
-    assertNotSame(arr, ((DenseDoubleMatrix) deepCopy).getValues());
+    assertNotSame(arr, ((DenseDoubleMatrix) deepCopy).toArray());
   }
 
   @Test
@@ -347,7 +350,7 @@ public class DenseDoubleMatrixTest extends TestCase {
     double[][] result = new double[][] { { 1, 0, 0, 0, 0 }, { 0, 1, 0, 0, 0 },
         { 0, 0, 1, 0, 0 }, { 0, 0, 0, 1, 0 }, { 0, 0, 0, 0, 1 } };
 
-    matrixEquals(result, eye.getValues());
+    matrixEquals(result, eye.toArray());
   }
 
   public void matrixEquals(double[][] left, double[][] right) {

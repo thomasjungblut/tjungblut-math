@@ -75,7 +75,7 @@ public interface DoubleMatrix {
    * Multiplies this matrix with a given vector v. The returning vector contains
    * the sum of the rows.
    */
-  public DoubleVector multiplyVector(DoubleVector v);
+  public DoubleVector multiplyVectorRow(DoubleVector v);
 
   /**
    * Multiplies this matrix with a given vector v. The returning vector contains
@@ -139,12 +139,14 @@ public interface DoubleMatrix {
   public DoubleMatrix pow(double x);
 
   /**
-   * Returns the maximum value of the given column.
+   * @return the maximum value of the given column. Note that on sparse
+   *         instances you may not see a zero as the maximum.
    */
   public double max(int column);
 
   /**
-   * Returns the minimum value of the given column.
+   * @return the minimum value of the given column. Note that on sparse
+   *         instances you may not see a zero as the minimum.
    */
   public double min(int column);
 
@@ -154,17 +156,22 @@ public interface DoubleMatrix {
   public double sum();
 
   /**
-   * Returns an array of column indices existing in this matrix.
+   * @return an array of column indices existing in this matrix.
    */
   public int[] columnIndices();
 
   /**
-   * Returns an array of row indices existing in this matrix.
+   * @return an array of row indices existing in this matrix.
    */
   public int[] rowIndices();
 
   /**
-   * Returns true if the underlying implementation is sparse.
+   * @return this matrix as a dense two dimensional double array.
+   */
+  public double[][] toArray();
+
+  /**
+   * @return true if the underlying implementation is sparse.
    */
   public boolean isSparse();
 
