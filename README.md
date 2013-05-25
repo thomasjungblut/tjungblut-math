@@ -67,6 +67,7 @@ Benchmarks
 
 You may want to see a Caliper benchmark result of comparing matrix multiplications of square matrices using GPU (JCUDA)/ JBLAS (lapack lite)/ Java implementations:
 
+```
    n    type          us linear runtime
   10     GPU      238,18 =
   10   JBLAS        5,14 =
@@ -95,6 +96,7 @@ You may want to see a Caliper benchmark result of comparing matrix multiplicatio
 2000     GPU   395683,94 =
 2000   JBLAS  9465452,45 ======================
 2000 TJ_MATH 12386527,91 ==============================
+```
 
 Until ~50x50 there is no benefit in using JBLAS and even later on there is little benefit. This is largely due to the overhead of copying the matrix representations 
 from heap to native memory and the slowness of lapack lite. 
