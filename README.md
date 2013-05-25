@@ -62,6 +62,45 @@ MyNativeBlasLibraryLoader.VERBOSE = true;
 
 This will print error messages and help you tracing down problems with missing libraries.
 
+Benchmarks
+-------
+
+You may want to see a Caliper benchmark result of comparing matrix multiplications of square matrices using GPU (JCUDA)/ JBLAS (lapack lite)/ Java implementations:
+
+>   n    type          us linear runtime
+>  10     GPU      238,18 =
+>  10   JBLAS        5,14 =
+>  10 TJ_MATH        4,88 =
+>  20     GPU      694,48 =
+>  20   JBLAS       15,70 =
+>  20 TJ_MATH       15,74 =
+>  40     GPU      257,27 =
+>  40   JBLAS       74,38 =
+>  40 TJ_MATH       86,26 =
+>  60     GPU      650,83 =
+>  60   JBLAS      224,14 =
+>  60 TJ_MATH      277,91 =
+>  80     GPU      684,96 =
+>  80   JBLAS      542,27 =
+>  80 TJ_MATH      645,70 =
+> 100     GPU      858,59 =
+> 100   JBLAS     1019,58 =
+> 100 TJ_MATH     1245,27 =
+> 500     GPU    10996,48 =
+> 500   JBLAS   116263,36 =
+> 500 TJ_MATH   152830,94 =
+>1000     GPU    71822,50 =
+>1000   JBLAS   953681,51 ==
+>1000 TJ_MATH  1358882,88 ===
+>2000     GPU   395683,94 =
+>2000   JBLAS  9465452,45 ======================
+>2000 TJ_MATH 12386527,91 ==============================
+
+Until ~50x50 there is no benefit in using JBLAS and even later on there is little benefit. This is largely due to the overhead of copying the matrix representations 
+from heap to native memory and the slowness of lapack lite. 
+The GPU gives great improvements when matrices get very large > 500x500 and copy costs (main to device memory) start to amortize itself.
+ 
+I will add benchmarks on Linux using JBLAS and ATLAS routines later on, also with JCUDA on a 6xx device that has improved double precision performance.
 
 License
 -------
