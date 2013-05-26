@@ -8,7 +8,7 @@ Note that test coverage is not a very good metric for bug-freeness as many tests
 Chain Calling
 -------
 
-My library as intentionally build to easily translate octave/matlab code from MOOC's to Java.
+My library was intentionally build to easily translate octave/matlab code from MOOC's to Java.
 For example the following octave code (simple gradient descent):
 
 > theta = theta - alpha * gradient;
@@ -65,7 +65,7 @@ This will print error messages and help you tracing down problems with missing l
 Benchmarks
 -------
 
-You may want to see a Caliper benchmark result of comparing matrix multiplications of square matrices using GPU (JCUDA)/ JBLAS (lapack lite)/ Java implementations:
+You may want to see a Caliper benchmark result of comparing matrix multiplications of square matrices using GPU (JCUDA)/ JBLAS (lapack lite)/ Java implementations on windows:
 
 ```
    n    type          us linear runtime
@@ -96,13 +96,58 @@ You may want to see a Caliper benchmark result of comparing matrix multiplicatio
 2000     GPU   395683,94 =
 2000   JBLAS  9465452,45 ======================
 2000 TJ_MATH 12386527,91 ==============================
+
+Hardware: Intel i7 920, Nvidia GTX580, Java7
 ```
 
 Until ~50x50 there is no benefit in using JBLAS and even later on there is little benefit. This is largely due to the overhead of copying the matrix representations 
 from heap to native memory and the slowness of lapack lite. 
 The GPU gives great improvements when matrices get very large > 500x500 and copy costs (main to device memory) start to amortize itself.
  
-I will add benchmarks on Linux using JBLAS and ATLAS routines later on, also with JCUDA on a 6xx device that has improved double precision performance.
+On Linux this looks a bit more in favor of JBLAS:
+
+```
+   n    type          us linear runtime
+  10     GPU       82,86 =
+  10   JBLAS        4,09 =
+  10 TJ_MATH        3,27 =
+  20     GPU      204,50 =
+  20   JBLAS        7,91 =
+  20 TJ_MATH        9,55 =
+  40     GPU      103,20 =
+  40   JBLAS       34,71 =
+  40 TJ_MATH       53,18 =
+  60     GPU      267,69 =
+  60   JBLAS       63,40 =
+  60 TJ_MATH      163,84 =
+  80     GPU      324,13 =
+  80   JBLAS      143,65 =
+  80 TJ_MATH      358,85 =
+ 100     GPU      475,00 =
+ 100   JBLAS      295,71 =
+ 100 TJ_MATH      675,14 =
+ 500     GPU    18507,11 =
+ 500   JBLAS    24072,70 =
+ 500 TJ_MATH    84433,83 =
+1000     GPU   139407,39 =
+1000   JBLAS   183385,59 =
+1000 TJ_MATH   842254,72 ===
+2000     GPU   961625,41 ===
+2000   JBLAS  1320723,49 =====
+2000 TJ_MATH  7436553,82 ==============================
+
+Hardware: Intel i7-3740QM, Nvidia GeForce GT 650M (mobile)
+```
+
+ATLAS does in fact better from 10x10 matrices. The GPU outperfoms the Java code earlier on 100x100 matrices, and outperforms ATLAS from 500x500.
+The difference isn't extreme between ATLAS and the GPU, because I benchmarked on a laptop. 
+The memory interface width is much more narrow than on the desktop (128 bit vs. at least 384 bit). Also the desktop has more CUDA Cores (512 vs. 384).
+If you would run this on a desktop (e.g. with a GTX780) the result would be desaterous for JBLAS from 100x100 matrices. (Will bench this in the future!)
+
+So even if you have a cool library at hand, you still need to benchmark the parameters on your target system. 
+Always remember the smart sentence in relation to technology: If you have a hammer, everything looks like a nail.
+
+The benchmark code can be found [here.](https://gist.github.com/thomasjungblut/5652037 "here")
 
 License
 -------
