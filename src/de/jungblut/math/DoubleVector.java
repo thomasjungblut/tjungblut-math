@@ -204,8 +204,8 @@ public interface DoubleVector {
   /**
    * Slices this vector from index 0 to the end index.
    * 
-   * @param length must be > 0 and smaller than the dimension of the vector.
-   * @return a new vector that is only length long.
+   * @param end must be > 0 and smaller than the dimension of the vector.
+   * @return a new vector that is only (0:end) long.
    */
   public DoubleVector slice(int end);
 
