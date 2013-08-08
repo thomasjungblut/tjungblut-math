@@ -46,7 +46,7 @@ This optimizer would be hooked into a classloader and optimize the bytecode at l
 JBLAS
 -------
 
-To neglect the performance problem with large matrices/vectors, I have added JBLAS for dense matrix multiplications. 
+To avoid the performance problem with large matrices/vectors, I have added JBLAS for dense matrix multiplications. 
 JBLAS is only activated on matrices that are bigger than 100 elements on every dimension. 
 On Linux (I use Ubuntu) it uses ATLAS routines and needs libgfortran3. 
 On Windows 64bit it uses lapack-lite and needs mingw64-x86_64-gcc-core and mingw64-x86_64-gfortran in the path.
