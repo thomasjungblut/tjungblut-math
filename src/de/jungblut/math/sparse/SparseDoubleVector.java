@@ -32,7 +32,7 @@ public final class SparseDoubleVector implements DoubleVector {
    * @param dimension the expected dimensionality of the vector.
    * @param expectedInserts the expected number of elements to be inserted.
    */
-  private SparseDoubleVector(int dimension, int expectedInserts) {
+  SparseDoubleVector(int dimension, int expectedInserts) {
     this.vector = new TIntDoubleHashMap(expectedInserts);
     this.dimension = dimension;
   }
