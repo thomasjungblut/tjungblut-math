@@ -188,14 +188,19 @@ public final class SparseDoubleRowMatrix implements DoubleMatrix {
 
   @Override
   public DoubleMatrix multiply(DoubleMatrix other) {
-    // TODO improve for sparse matrices.
     DoubleMatrix result = new SparseDoubleRowMatrix(this.getRowCount(),
         other.getColumnCount());
     for (int row = 0; row < getRowCount(); row++) {
       for (int col = 0; col < other.getColumnCount(); col++) {
         double sum = 0;
-        for (int k = 0; k < getColumnCount(); k++) {
-          sum += get(row, k) * other.get(k, col);
+        Iterator<DoubleVectorElement> kIterator = getRowVector(row)
+            .iterateNonZero();
+        while (kIterator.hasNext()) {
+          DoubleVectorElement k = kIterator.next();
+          double val = other.get(k.getIndex(), col);
+          if (val != 0d) {
+            sum += k.getValue() * val;
+          }
         }
         result.set(row, col, sum);
       }
