@@ -289,7 +289,8 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
         && n > JBLAS_COLUMN_THRESHOLD && !other.isSparse()) {
       org.jblas.DoubleMatrix jblasThis = new org.jblas.DoubleMatrix(m, n,
           this.matrix);
-      org.jblas.DoubleMatrix jblasOther = new org.jblas.DoubleMatrix(m, p,
+      org.jblas.DoubleMatrix jblasOther = new org.jblas.DoubleMatrix(
+          other.getRowCount(), other.getColumnCount(),
           ((DenseDoubleMatrix) other).matrix);
       org.jblas.DoubleMatrix jblasRes = new org.jblas.DoubleMatrix(m, p);
       jblasThis.mmuli(jblasOther, jblasRes);
