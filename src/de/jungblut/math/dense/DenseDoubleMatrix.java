@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
+import org.apache.commons.math3.util.FastMath;
 import org.jblas.MyNativeBlasLibraryLoader;
 
 import de.jungblut.math.DoubleMatrix;
@@ -12,8 +13,10 @@ import de.jungblut.math.DoubleVector;
 import de.jungblut.math.DoubleVector.DoubleVectorElement;
 
 /**
- * Dense double matrix implementation, internally uses two dimensional double
- * arrays.
+ * Dense double matrix implementation. Internally a column major ordering is
+ * used, just like in any other scientific language like FORTRAN or MATLAB. This
+ * is especially better for Java in terms of memory usage, as every row of the
+ * matrix has additional array/object overhead to deal with.
  */
 public final class DenseDoubleMatrix implements DoubleMatrix {
 
@@ -26,7 +29,11 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     JBLAS_AVAILABLE = MyNativeBlasLibraryLoader.loadLibraryAndCheckErrors();
   }
 
-  private final double[][] matrix;
+  /**
+   * We use a column major format to store the matrix, as two dimensional arrays
+   * have a high waste of space.
+   */
+  private final double[] matrix;
   private final int numRows;
   private final int numColumns;
 
@@ -39,7 +46,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
   public DenseDoubleMatrix(int rows, int columns) {
     this.numRows = rows;
     this.numColumns = columns;
-    this.matrix = new double[rows][columns];
+    this.matrix = new double[columns * rows];
   }
 
   /**
@@ -52,9 +59,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
    */
   public DenseDoubleMatrix(int rows, int columns, double defaultValue) {
     this(rows, columns);
-    for (int i = 0; i < numRows; i++) {
-      Arrays.fill(matrix[i], defaultValue);
-    }
+    Arrays.fill(matrix, defaultValue);
   }
 
   /**
@@ -67,10 +72,8 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
    */
   public DenseDoubleMatrix(int rows, int columns, Random rand) {
     this(rows, columns);
-    for (int i = 0; i < numRows; i++) {
-      for (int j = 0; j < numColumns; j++) {
-        matrix[i][j] = rand.nextDouble();
-      }
+    for (int i = 0; i < matrix.length; i++) {
+      matrix[i] = rand.nextDouble();
     }
   }
 
@@ -81,8 +84,10 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
    */
   public DenseDoubleMatrix(double[][] otherMatrix) {
     this(otherMatrix.length, otherMatrix[0].length);
-    for (int i = 0; i < otherMatrix.length; i++) {
-      System.arraycopy(otherMatrix[i], 0, matrix[i], 0, otherMatrix[i].length);
+    for (int row = 0; row < otherMatrix.length; row++) {
+      for (int col = 0; col < otherMatrix[row].length; col++) {
+        set(row, col, otherMatrix[row][col]);
+      }
     }
   }
 
@@ -94,9 +99,12 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
    */
   public DenseDoubleMatrix(List<DoubleVector> vec) {
     this(vec.size(), vec.get(0).getDimension());
-    int index = 0;
+    int row = 0;
     for (DoubleVector value : vec) {
-      matrix[index++] = value.toArray();
+      for (int col = 0; col < value.getDimension(); col++) {
+        set(row, col, value.get(col));
+      }
+      row++;
     }
   }
 
@@ -120,33 +128,40 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
    */
   public DenseDoubleMatrix(DenseDoubleVector first, DoubleMatrix otherMatrix) {
     this(otherMatrix.getRowCount(), otherMatrix.getColumnCount() + 1);
-    for (int row = 0; row < getRowCount(); row++) {
-      set(row, 0, first.get(row));
-      DoubleVector rowVector = otherMatrix.getRowVector(row);
-      System.arraycopy(rowVector.toArray(), 0, matrix[row], 1,
-          rowVector.getLength());
+    // copy the first column
+    System.arraycopy(first.toArray(), 0, matrix, 0, first.getDimension());
+
+    int offset = first.getDimension();
+    for (int col : otherMatrix.columnIndices()) {
+      double[] clv = otherMatrix.getColumnVector(col).toArray();
+      System.arraycopy(clv, 0, matrix, offset, clv.length);
+      offset += clv.length;
     }
+
   }
 
   /**
    * Copies the given double array v into the first row of this matrix, and
-   * creates this with the number of given rows and columns.
+   * creates this with the number of given rows and columns. This is basically a
+   * conversion case for column major storage to this class (in the past this
+   * was backed by a two-dimensional array, thus the conversion needs).
    * 
    * @param v the values to put into the first row.
    * @param rows the number of rows.
    * @param columns the number of columns.
    */
   public DenseDoubleMatrix(double[] v, int rows, int columns) {
-    this(rows, columns);
-    for (int i = 0; i < rows; i++) {
-      System.arraycopy(v, i * columns, this.matrix[i], 0, columns);
-    }
+    this(v, rows, columns, true);
+  }
 
-    int index = 0;
-    for (int col = 0; col < columns; col++) {
-      for (int row = 0; row < rows; row++) {
-        matrix[row][col] = v[index++];
-      }
+  private DenseDoubleMatrix(double[] v, int rows, int columns, boolean copy) {
+    this.numRows = rows;
+    this.numColumns = columns;
+    if (copy) {
+      this.matrix = new double[columns * rows];
+      System.arraycopy(v, 0, this.matrix, 0, v.length);
+    } else {
+      this.matrix = v;
     }
   }
 
@@ -154,9 +169,16 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
    * ------------CONSTRUCTOR END------------
    */
 
+  /**
+   * @return the internal matrix representation, no defensive copy is made.
+   */
+  public double[] getColumnMajorMatrix() {
+    return this.matrix;
+  }
+
   @Override
   public double get(int row, int col) {
-    return this.matrix[row][col];
+    return matrix[translate(row, col, numRows)];
   }
 
   /**
@@ -164,8 +186,9 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
    */
   public double[] getColumn(int col) {
     double[] column = new double[numRows];
-    for (int r = 0; r < numRows; r++) {
-      column[r] = matrix[r][col];
+    int offset = translate(0, col, numRows);
+    for (int i = 0; i < column.length; i++) {
+      column[i] = matrix[offset + i];
     }
     return column;
   }
@@ -180,20 +203,27 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     return new DenseDoubleVector(getColumn(col));
   }
 
-  /**
-   * Returns the internal representation two dimensional array, so be careful as
-   * no defensive copy is made.
-   */
   @Override
   public double[][] toArray() {
-    return matrix;
+    double[][] mat = new double[getRowCount()][getColumnCount()];
+    int index = 0;
+    for (int col = 0; col < getColumnCount(); col++) {
+      for (int row = 0; row < getRowCount(); row++) {
+        mat[row][col] = matrix[index++];
+      }
+    }
+    return mat;
   }
 
   /**
    * Get a single row of the matrix as a double array.
    */
   public double[] getRow(int row) {
-    return matrix[row];
+    double[] rowArray = new double[getColumnCount()];
+    for (int i = 0; i < getColumnCount(); i++) {
+      rowArray[i] = get(row, i);
+    }
+    return rowArray;
   }
 
   @Override
@@ -208,25 +238,24 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
 
   @Override
   public void set(int row, int col, double value) {
-    this.matrix[row][col] = value;
+    this.matrix[translate(row, col, numRows)] = value;
   }
 
   /**
-   * Sets the row to a given double array. This does not copy, rather than just
-   * bends the references.
+   * Sets the row to a given double array.
    */
   public void setRow(int row, double[] value) {
-    this.matrix[row] = value;
+    for (int i = 0; i < value.length; i++) {
+      this.matrix[translate(row, i, numRows)] = value[i];
+    }
   }
 
   /**
-   * Sets the column to a given double array. This does not copy, rather than
-   * just bends the references.
+   * Sets the column to a given double array.
    */
   public void setColumn(int col, double[] values) {
-    for (int i = 0; i < getRowCount(); i++) {
-      this.matrix[i][col] = values[i];
-    }
+    int offset = translate(0, col, numRows);
+    System.arraycopy(values, 0, matrix, offset, values.length);
   }
 
   @Override
@@ -241,39 +270,34 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
 
   @Override
   public DenseDoubleMatrix multiply(double scalar) {
-    DenseDoubleMatrix m = new DenseDoubleMatrix(this.numRows, this.numColumns);
-    for (int i = 0; i < numRows; i++) {
-      for (int j = 0; j < numColumns; j++) {
-        m.set(i, j, this.matrix[i][j] * scalar);
-      }
+    double[] csjr = new double[this.numRows * this.numColumns];
+    for (int i = 0; i < matrix.length; i++) {
+      csjr[i] = this.matrix[i] * scalar;
     }
-    return m;
+    return new DenseDoubleMatrix(csjr, this.numRows, this.numColumns, false);
   }
 
   @Override
   public DoubleMatrix multiply(DoubleMatrix other) {
-    DenseDoubleMatrix matrix = new DenseDoubleMatrix(this.getRowCount(),
-        other.getColumnCount());
+    DenseDoubleMatrix matrix = null;
 
     int m = this.numRows;
     int n = this.numColumns;
     int p = other.getColumnCount();
     // only execute when we have JBLAS and our matrix is bigger than 50x50
     if (JBLAS_AVAILABLE && m > JBLAS_ROW_THRESHOLD
-        && n > JBLAS_COLUMN_THRESHOLD) {
-      org.jblas.DoubleMatrix jblasThis = new org.jblas.DoubleMatrix(this.matrix);
-      org.jblas.DoubleMatrix jblasOther = new org.jblas.DoubleMatrix(
+        && n > JBLAS_COLUMN_THRESHOLD && !other.isSparse()) {
+      org.jblas.DoubleMatrix jblasThis = new org.jblas.DoubleMatrix(m, n,
+          this.matrix);
+      org.jblas.DoubleMatrix jblasOther = new org.jblas.DoubleMatrix(m, p,
           ((DenseDoubleMatrix) other).matrix);
-      org.jblas.DoubleMatrix jblasRes = new org.jblas.DoubleMatrix(
-          matrix.getRowCount(), this.getColumnCount());
+      org.jblas.DoubleMatrix jblasRes = new org.jblas.DoubleMatrix(m, p);
       jblasThis.mmuli(jblasOther, jblasRes);
       // copy the result back
-      for (int row = 0; row < matrix.getRowCount(); row++) {
-        for (int col = 0; col < matrix.getColumnCount(); col++) {
-          matrix.set(row, col, jblasRes.get(jblasRes.index(row, col)));
-        }
-      }
+      matrix = new DenseDoubleMatrix(jblasRes.toArray(), this.getRowCount(),
+          other.getColumnCount(), false);
     } else {
+      matrix = new DenseDoubleMatrix(m, p);
       for (int k = 0; k < n; k++) {
         for (int i = 0; i < m; i++) {
           for (int j = 0; j < p; j++) {
@@ -309,11 +333,12 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
         Iterator<DoubleVectorElement> iterateNonZero = v.iterateNonZero();
         while (iterateNonZero.hasNext()) {
           DoubleVectorElement next = iterateNonZero.next();
-          sum += (matrix[row][next.getIndex()] * next.getValue());
+          sum += (matrix[translate(row, next.getIndex(), numRows)] * next
+              .getValue());
         }
       } else {
         for (int col = 0; col < numColumns; col++) {
-          sum += (matrix[row][col] * v.get(col));
+          sum += (matrix[translate(row, col, numRows)] * v.get(col));
         }
       }
       vector.set(row, sum);
@@ -328,7 +353,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     for (int col = 0; col < numColumns; col++) {
       double sum = 0.0d;
       for (int row = 0; row < numRows; row++) {
-        sum += (matrix[row][col] * v.get(row));
+        sum += (matrix[translate(row, col, numRows)] * v.get(row));
       }
       vector.set(col, sum);
     }
@@ -341,7 +366,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     DenseDoubleMatrix m = new DenseDoubleMatrix(this.numColumns, this.numRows);
     for (int i = 0; i < numRows; i++) {
       for (int j = 0; j < numColumns; j++) {
-        m.set(j, i, this.matrix[i][j]);
+        m.set(j, i, this.matrix[translate(i, j, numRows)]);
       }
     }
     return m;
@@ -349,24 +374,20 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
 
   @Override
   public DenseDoubleMatrix subtractBy(double amount) {
-    DenseDoubleMatrix m = new DenseDoubleMatrix(this.numRows, this.numColumns);
-    for (int i = 0; i < numRows; i++) {
-      for (int j = 0; j < numColumns; j++) {
-        m.set(i, j, amount - this.matrix[i][j]);
-      }
+    double[] csjr = new double[this.numRows * this.numColumns];
+    for (int i = 0; i < matrix.length; i++) {
+      csjr[i] = amount - this.matrix[i];
     }
-    return m;
+    return new DenseDoubleMatrix(csjr, this.numRows, this.numColumns, false);
   }
 
   @Override
   public DenseDoubleMatrix subtract(double amount) {
-    DenseDoubleMatrix m = new DenseDoubleMatrix(this.numRows, this.numColumns);
-    for (int i = 0; i < numRows; i++) {
-      for (int j = 0; j < numColumns; j++) {
-        m.set(i, j, this.matrix[i][j] - amount);
-      }
+    double[] csjr = new double[this.numRows * this.numColumns];
+    for (int i = 0; i < matrix.length; i++) {
+      csjr[i] = this.matrix[i] - amount;
     }
-    return m;
+    return new DenseDoubleMatrix(csjr, this.numRows, this.numColumns, false);
   }
 
   @Override
@@ -374,7 +395,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     DoubleMatrix m = new DenseDoubleMatrix(this.numRows, this.numColumns);
     for (int i = 0; i < numRows; i++) {
       for (int j = 0; j < numColumns; j++) {
-        m.set(i, j, this.matrix[i][j] - other.get(i, j));
+        m.set(i, j, this.matrix[translate(i, j, numRows)] - other.get(i, j));
       }
     }
     return m;
@@ -405,7 +426,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     DoubleMatrix m = new DenseDoubleMatrix(this.numRows, this.numColumns);
     for (int i = 0; i < numRows; i++) {
       for (int j = 0; j < numColumns; j++) {
-        m.set(i, j, this.matrix[i][j] / other.get(i, j));
+        m.set(i, j, this.matrix[translate(i, j, numRows)] / other.get(i, j));
       }
     }
     return m;
@@ -413,13 +434,11 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
 
   @Override
   public DoubleMatrix divide(double scalar) {
-    DoubleMatrix m = new DenseDoubleMatrix(this.numRows, this.numColumns);
-    for (int i = 0; i < numRows; i++) {
-      for (int j = 0; j < numColumns; j++) {
-        m.set(i, j, this.matrix[i][j] / scalar);
-      }
+    double[] csjr = new double[this.numRows * this.numColumns];
+    for (int i = 0; i < matrix.length; i++) {
+      csjr[i] = this.matrix[i] / scalar;
     }
-    return m;
+    return new DenseDoubleMatrix(csjr, this.numRows, this.numColumns, false);
   }
 
   @Override
@@ -427,7 +446,7 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     DoubleMatrix m = new DenseDoubleMatrix(this.numRows, this.numColumns);
     for (int i = 0; i < numRows; i++) {
       for (int j = 0; j < numColumns; j++) {
-        m.set(i, j, this.matrix[i][j] + other.get(i, j));
+        m.set(i, j, this.matrix[translate(i, j, numRows)] + other.get(i, j));
       }
     }
     return m;
@@ -435,24 +454,23 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
 
   @Override
   public DoubleMatrix pow(double x) {
-    DoubleMatrix m = new DenseDoubleMatrix(this.numRows, this.numColumns);
-    for (int i = 0; i < numRows; i++) {
-      for (int j = 0; j < numColumns; j++) {
-        if (x == 2d) {
-          m.set(i, j, matrix[i][j] * matrix[i][j]);
-        } else {
-          m.set(i, j, Math.pow(matrix[i][j], x));
-        }
+    double[] csjr = new double[this.numRows * this.numColumns];
+    for (int i = 0; i < matrix.length; i++) {
+      if (x == 2d) {
+        csjr[i] = this.matrix[i] * this.matrix[i];
+      } else {
+        csjr[i] = FastMath.pow(this.matrix[i], x);
       }
     }
-    return m;
+    return new DenseDoubleMatrix(csjr, this.numRows, this.numColumns, false);
   }
 
   @Override
   public double max(int column) {
     double max = Double.MIN_VALUE;
+    int offset = translate(0, column, numRows);
     for (int i = 0; i < getRowCount(); i++) {
-      double d = matrix[i][column];
+      double d = matrix[offset + i];
       if (d > max) {
         max = d;
       }
@@ -463,8 +481,9 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
   @Override
   public double min(int column) {
     double min = Double.MAX_VALUE;
+    int offset = translate(0, column, numRows);
     for (int i = 0; i < getRowCount(); i++) {
-      double d = matrix[i][column];
+      double d = matrix[offset + i];
       if (d < min) {
         min = d;
       }
@@ -497,10 +516,8 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
   @Override
   public double sum() {
     double x = 0.0d;
-    for (int i = 0; i < numRows; i++) {
-      for (int j = 0; j < numColumns; j++) {
-        x += Math.abs(matrix[i][j]);
-      }
+    for (int i = 0; i < matrix.length; i++) {
+      x += Math.abs(matrix[i]);
     }
     return x;
   }
@@ -530,8 +547,9 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
   public String toString() {
     if (numRows * numColumns < 100) {
       StringBuilder sb = new StringBuilder();
+      double[][] array = toArray();
       for (int i = 0; i < numRows; i++) {
-        sb.append(Arrays.toString(matrix[i]));
+        sb.append(Arrays.toString(array[i]));
         sb.append('\n');
       }
       return sb.toString();
@@ -548,16 +566,15 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
   }
 
   /**
-   * Gets the eye matrix (ones on the main diagonal) with a given dimension.
+   * Translates the 2D addressing to a single offset in the 1D matrix.
+   * 
+   * @param row the row to get.
+   * @param col the column to get.
+   * @param numRows the number of rows in the matrix.
+   * @return an offset in the 1D matrix that contains the row/col value.
    */
-  public static DenseDoubleMatrix eye(int dimension) {
-    DenseDoubleMatrix m = new DenseDoubleMatrix(dimension, dimension);
-
-    for (int i = 0; i < dimension; i++) {
-      m.set(i, i, 1);
-    }
-
-    return m;
+  private static int translate(int row, int col, int numRows) {
+    return row + col * numRows;
   }
 
 }

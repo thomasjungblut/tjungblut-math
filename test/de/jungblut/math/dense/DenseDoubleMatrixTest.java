@@ -49,7 +49,7 @@ public class DenseDoubleMatrixTest extends TestCase {
     assertEquals(2, mat.getColumnCount());
     matrixEquals(result, ((DenseDoubleMatrix) mat).toArray());
 
-    mat = new DenseDoubleMatrix(2, 2);
+    mat = new DenseDoubleMatrix(2, 2, 5);
 
     DenseDoubleMatrix wBias = new DenseDoubleMatrix(DenseDoubleVector.ones(2),
         mat);
@@ -57,10 +57,10 @@ public class DenseDoubleMatrixTest extends TestCase {
     assertEquals(3, wBias.getColumnCount());
     arrayEquals(wBias.getColumnVector(0).toArray(), DenseDoubleVector.ones(2)
         .toArray());
-    arrayEquals(wBias.getColumnVector(1).toArray(), DenseDoubleVector.zeros(2)
-        .toArray());
-    arrayEquals(wBias.getColumnVector(2).toArray(), DenseDoubleVector.zeros(2)
-        .toArray());
+    arrayEquals(wBias.getColumnVector(1).toArray(),
+        new DenseDoubleVector(2, 5).toArray());
+    arrayEquals(wBias.getColumnVector(2).toArray(),
+        new DenseDoubleVector(2, 5).toArray());
 
     double[] data = new double[] { 2, 3, 4, 5, 6, 7 };
     mat = new DenseDoubleMatrix(data, 3, 2);
@@ -108,7 +108,7 @@ public class DenseDoubleMatrixTest extends TestCase {
     }
 
     mat.setRowVector(1, new DenseDoubleVector(new double[] { 2, 3, 4 }));
-    arrayEquals(mat.toArray()[0], arr[0]);
+    arrayEquals(mat.toArray()[1], new double[] { 2, 3, 4 });
 
     mat.setColumnVector(1, new DenseDoubleVector(new double[] { 2, 4 }));
     arrayEquals(mat.getColumnVector(0).toArray(), new double[] { 1, 2 });
@@ -342,15 +342,6 @@ public class DenseDoubleMatrixTest extends TestCase {
     mat = new DenseDoubleMatrix(100, 102);
     assertEquals("100x102", mat.toString());
 
-  }
-
-  @Test
-  public void testEye() {
-    DenseDoubleMatrix eye = DenseDoubleMatrix.eye(5);
-    double[][] result = new double[][] { { 1, 0, 0, 0, 0 }, { 0, 1, 0, 0, 0 },
-        { 0, 0, 1, 0, 0 }, { 0, 0, 0, 1, 0 }, { 0, 0, 0, 0, 1 } };
-
-    matrixEquals(result, eye.toArray());
   }
 
   public void matrixEquals(double[][] left, double[][] right) {
