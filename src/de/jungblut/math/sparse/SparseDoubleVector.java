@@ -123,6 +123,8 @@ public final class SparseDoubleVector implements DoubleVector {
   public void set(int index, double value) {
     if (value != SPARSE_DEFAULT_VALUE) {
       vector.put(index, value);
+    } else {
+      vector.remove(index);
     }
   }
 

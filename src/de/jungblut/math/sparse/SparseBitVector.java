@@ -113,6 +113,8 @@ public final class SparseBitVector implements DoubleVector {
   public void set(int index, double value) {
     if (value != SPARSE_DEFAULT_VALUE) {
       vector.set(index);
+    } else {
+      vector.clear(index);
     }
   }
 
