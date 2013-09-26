@@ -558,6 +558,7 @@ public final class SparseDoubleVector implements DoubleVector {
 
     private final DoubleVectorElement element = new DoubleVectorElement();
     private final TIntDoubleIterator iterator;
+    private int currentIndex = 0;
 
     public NonZeroIterator() {
       iterator = vector.iterator();
@@ -565,7 +566,8 @@ public final class SparseDoubleVector implements DoubleVector {
 
     @Override
     protected final DoubleVectorElement computeNext() {
-      if (iterator.hasNext()) {
+      if (currentIndex < vector.size()) {
+        currentIndex++;
         iterator.advance();
         element.setIndex(iterator.key());
         element.setValue(iterator.value());

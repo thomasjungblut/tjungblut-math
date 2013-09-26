@@ -1,6 +1,7 @@
 package de.jungblut.math.sparse;
 
 import java.util.HashSet;
+import java.util.Iterator;
 
 import junit.framework.TestCase;
 
@@ -12,6 +13,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.JUnit4;
 
 import de.jungblut.math.DoubleVector;
+import de.jungblut.math.DoubleVector.DoubleVectorElement;
 import de.jungblut.math.dense.DenseDoubleVector;
 import de.jungblut.math.function.DoubleDoubleVectorFunction;
 import de.jungblut.math.function.DoubleVectorFunction;
@@ -46,6 +48,31 @@ public class SparseDoubleVectorTest extends TestCase {
     res = new double[] { 4, 0, 5, 6, 0, 7, 8, 0 };
     vec = new SparseDoubleVector(new SparseDoubleVector(res));
     arrayEquals(res, vec.toArray());
+  }
+
+  @Test
+  public void testIteration() {
+    double[] res = new double[] { 4, 0, 5, 6, 0, 7, 8, 0 };
+    SparseDoubleVector vec = new SparseDoubleVector(res);
+    Iterator<DoubleVectorElement> iterateNonZero = vec.iterateNonZero();
+    int iterated = 0;
+    while (iterateNonZero.hasNext()) {
+      DoubleVectorElement next = iterateNonZero.next();
+      iterated++;
+      assertEquals(res[next.getIndex()], next.getValue(), 1e-5);
+    }
+    assertEquals(5, iterated);
+
+    res = new double[] { 4, 0, 5, 6, 0, 7, 8, 0 };
+    vec = new SparseDoubleVector(res);
+    Iterator<DoubleVectorElement> iterate = vec.iterate();
+    iterated = 0;
+    while (iterate.hasNext()) {
+      DoubleVectorElement next = iterate.next();
+      iterated++;
+      assertEquals(res[next.getIndex()], next.getValue(), 1e-5);
+    }
+    assertEquals(res.length, iterated);
   }
 
   @Test
