@@ -122,6 +122,14 @@ public class SparseDoubleRowMatrixTest extends TestCase {
     double[] resultVec = new double[] { 10d, 14d, 18d };
     arrayEquals(resultVec, multiplyVectorColumn.toArray());
 
+    mat = new SparseDoubleRowMatrix(arr);
+    multiplyVectorColumn = mat.multiplyVectorColumn(new SparseDoubleVector(
+        new double[] { 0d, 2d }));
+    resultVec = new double[] { 8d, 10d, 12d };
+    arrayEquals(resultVec, multiplyVectorColumn.toArray());
+
+    // rows
+
     DenseDoubleVector vec = new DenseDoubleVector(new double[] { 2, 0, 2 });
     DoubleVector multiply = mat.multiplyVectorRow(vec);
     assertEquals(8d, multiply.get(0));

@@ -245,7 +245,7 @@ public final class SparseDoubleRowMatrix implements DoubleMatrix {
   @Override
   public DoubleVector multiplyVectorRow(DoubleVector v) {
     DoubleVector result = new SparseDoubleVector(this.getRowCount());
-    for (int row : this.matrix.keys()) {
+    for (int row : matrix.keys()) {
       Iterator<DoubleVectorElement> iterateNonZero = matrix.get(row)
           .iterateNonZero();
       double sum = 0.0d;
@@ -261,13 +261,29 @@ public final class SparseDoubleRowMatrix implements DoubleMatrix {
   @Override
   public DoubleVector multiplyVectorColumn(DoubleVector v) {
     DoubleVector result = new SparseDoubleVector(this.getColumnCount());
-    for (int row : rowIndices()) {
-      Iterator<DoubleVectorElement> iterateNonZero = matrix.get(row)
-          .iterateNonZero();
-      while (iterateNonZero.hasNext()) {
-        DoubleVectorElement e = iterateNonZero.next();
-        result.set(e.getIndex(),
-            (e.getValue() * v.get(row)) + result.get(e.getIndex()));
+    if (v.isSparse()) {
+      Iterator<DoubleVectorElement> vectorNonZero = v.iterateNonZero();
+      while (vectorNonZero.hasNext()) {
+        DoubleVectorElement featureElement = vectorNonZero.next();
+        DoubleVector rowVector = getRowVector(featureElement.getIndex());
+        Iterator<DoubleVectorElement> rowNonZero = rowVector.iterateNonZero();
+        while (rowNonZero.hasNext()) {
+          DoubleVectorElement outcomeElement = rowNonZero.next();
+          result.set(
+              outcomeElement.getIndex(),
+              result.get(outcomeElement.getIndex())
+                  + (outcomeElement.getValue() * featureElement.getValue()));
+        }
+      }
+    } else {
+      for (int row : rowIndices()) {
+        Iterator<DoubleVectorElement> iterateNonZero = matrix.get(row)
+            .iterateNonZero();
+        while (iterateNonZero.hasNext()) {
+          DoubleVectorElement e = iterateNonZero.next();
+          result.set(e.getIndex(),
+              (e.getValue() * v.get(row)) + result.get(e.getIndex()));
+        }
       }
     }
     return result;
@@ -506,6 +522,10 @@ public final class SparseDoubleRowMatrix implements DoubleMatrix {
     } else {
       return sizeToString();
     }
+  }
+
+  public void removeRow(int row) {
+    matrix.remove(row);
   }
 
   /**
