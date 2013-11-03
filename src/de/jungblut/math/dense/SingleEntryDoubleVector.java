@@ -244,4 +244,29 @@ public final class SingleEntryDoubleVector implements DoubleVector {
     return null;
   }
 
+  @Override
+  public int hashCode() {
+    final int prime = 31;
+    int result = 1;
+    long temp;
+    temp = Double.doubleToLongBits(this.value);
+    result = prime * result + (int) (temp ^ (temp >>> 32));
+    return result;
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj)
+      return true;
+    if (obj == null)
+      return false;
+    if (getClass() != obj.getClass())
+      return false;
+    SingleEntryDoubleVector other = (SingleEntryDoubleVector) obj;
+    if (Double.doubleToLongBits(this.value) != Double
+        .doubleToLongBits(other.value))
+      return false;
+    return true;
+  }
+
 }
