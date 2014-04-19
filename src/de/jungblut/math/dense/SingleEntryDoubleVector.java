@@ -269,4 +269,9 @@ public final class SingleEntryDoubleVector implements DoubleVector {
     return true;
   }
 
+  @Override
+  public String toString() {
+    return this.value + "";
+  }
+
 }
