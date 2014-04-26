@@ -594,6 +594,11 @@ public final class SparseBitVector implements DoubleVector {
   }
 
   @Override
+  public boolean isSingle() {
+    return false;
+  }
+
+  @Override
   public String getName() {
     return null;
   }

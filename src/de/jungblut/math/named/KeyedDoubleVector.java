@@ -37,6 +37,11 @@ public final class KeyedDoubleVector implements DoubleVector {
     return true;
   }
 
+  @Override
+  public boolean isSingle() {
+    return false;
+  }
+
   /**
    * @return get the raw embedded vector.
    */
@@ -226,7 +231,7 @@ public final class KeyedDoubleVector implements DoubleVector {
 
   @Override
   public String toString() {
-    return "NamedDoubleVector [name=" + this.key + ", vector=" + this.vector
+    return "KeyedDoubleVector [name=" + this.key + ", vector=" + this.vector
         + "]";
   }
 

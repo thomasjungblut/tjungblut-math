@@ -55,7 +55,6 @@ public class MyNativeBlasLibraryLoader {
                   + "and add the directory <cygwin-home>\\usr\\x86_64-w64-mingw32\\sys-root\\mingw\\bin to your path.\n\n"
                   + "For more information, see http://github.com/mikiobraun/jblas/wiki/Missing-Libraries");
         }
-        return false;
       } else if (name.equals("Linux") && arch.equals("amd64")) {
         if (VERBOSE) {
           System.err
@@ -64,8 +63,9 @@ public class MyNativeBlasLibraryLoader {
                   + "For example for debian or Ubuntu, type \"sudo apt-get install libgfortran3\"\n\n"
                   + "For more information, see https://github.com/mikiobraun/jblas/wiki/Missing-Libraries");
         }
-        return false;
       }
+
+      return false;
     }
     return true;
   }

@@ -610,6 +610,11 @@ public final class SparseDoubleVector implements DoubleVector {
   }
 
   @Override
+  public boolean isSingle() {
+    return false;
+  }
+
+  @Override
   public String getName() {
     return null;
   }

@@ -286,10 +286,16 @@ public interface DoubleVector {
   public boolean isSparse();
 
   /**
-   * @return true if this instance is a named vector.Smarter and faster than
+   * @return true if this instance is a named vector. Smarter and faster than
    *         instanceof.
    */
   public boolean isNamed();
+
+  /**
+   * @return true if this instance is a single entry vector. Smarter and faster
+   *         than instanceof.
+   */
+  public boolean isSingle();
 
   /**
    * @return If this vector is a named instance, this will return its name. Or

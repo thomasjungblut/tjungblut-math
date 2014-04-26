@@ -33,6 +33,11 @@ public final class NamedDoubleVector implements DoubleVector {
     return true;
   }
 
+  @Override
+  public boolean isSingle() {
+    return vector.isSingle();
+  }
+
   /**
    * @return get the raw embedded vector.
    */

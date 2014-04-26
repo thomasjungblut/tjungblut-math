@@ -235,6 +235,11 @@ public final class SingleEntryDoubleVector implements DoubleVector {
   }
 
   @Override
+  public boolean isSingle() {
+    return true;
+  }
+
+  @Override
   public boolean isNamed() {
     return false;
   }
