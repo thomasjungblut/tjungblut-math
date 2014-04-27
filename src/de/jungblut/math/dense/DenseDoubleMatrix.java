@@ -63,6 +63,20 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
   }
 
   /**
+   * Creates a new matrix from the rows and columns, given the column major
+   * array input. This method does not copy the given array.
+   * 
+   * @param rows the num of rows.
+   * @param columns the num of columns.
+   * @param columnMajorArray the array that has a column major layout.
+   */
+  public DenseDoubleMatrix(int rows, int columns, double[] columnMajorArray) {
+    this.numRows = rows;
+    this.numColumns = columns;
+    this.matrix = columnMajorArray;
+  }
+
+  /**
    * Creates a new empty matrix from the rows and columns filled with the given
    * random values.
    * 
