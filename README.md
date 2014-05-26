@@ -161,6 +161,8 @@ If something is not licensed via Apache 2.0, there is a reference or an addition
 Build
 -----
 
+You will need Java 8 to build this library.
+
 You can simply build with:
  
 > mvn clean package install

@@ -363,7 +363,7 @@ public class DenseDoubleVectorTest extends TestCase {
 
   @Test
   public void testHashing() {
-    HashSet<DoubleVector> set = new HashSet<DoubleVector>();
+    HashSet<DoubleVector> set = new HashSet<>();
 
     set.add(new DenseDoubleVector(new double[] { 1, 2, 3, 4, 5 }));
     set.add(new DenseDoubleVector(new double[] { 1, 2, 6, 4, 5 }));

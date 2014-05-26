@@ -317,7 +317,7 @@ public class SparseBitVectorTest extends TestCase {
 
   @Test
   public void testHashing() {
-    HashSet<DoubleVector> set = new HashSet<DoubleVector>();
+    HashSet<DoubleVector> set = new HashSet<>();
 
     set.add(new SparseBitVector(new double[] { 1, 0, 3, 4, 5 }));
     set.add(new SparseBitVector(new double[] { 1, 2, 6, 4, 5 }));

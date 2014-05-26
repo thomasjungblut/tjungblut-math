@@ -36,7 +36,7 @@ public final class SparseDoubleRowMatrix implements DoubleMatrix {
   public SparseDoubleRowMatrix(int rows, int columns) {
     this.numRows = rows;
     this.numColumns = columns;
-    this.matrix = new TIntObjectHashMap<SparseDoubleVector>(numRows);
+    this.matrix = new TIntObjectHashMap<>(numRows);
   }
 
   /**

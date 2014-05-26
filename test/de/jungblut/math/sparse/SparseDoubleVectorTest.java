@@ -347,7 +347,7 @@ public class SparseDoubleVectorTest extends TestCase {
 
   @Test
   public void testHashing() {
-    HashSet<DoubleVector> set = new HashSet<DoubleVector>();
+    HashSet<DoubleVector> set = new HashSet<>();
 
     set.add(new SparseDoubleVector(new double[] { 1, 2, 3, 4, 5 }));
     set.add(new SparseDoubleVector(new double[] { 1, 2, 6, 4, 5 }));
