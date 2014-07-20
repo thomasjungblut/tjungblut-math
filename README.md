@@ -43,25 +43,6 @@ for (int i = 0; i < vec1.getLength(); i++) {
 Currently I have an idea to write a bytecode optimizer that will unchain such calls to minimize the performance penalty.
 This optimizer would be hooked into a classloader and optimize the bytecode at load-time or at build time as part of maven.
 
-JBLAS
--------
-
-To avoid the performance problem with large matrices/vectors, I have added JBLAS for dense matrix multiplications. 
-JBLAS is only activated on matrices that are bigger than 100 elements on every dimension. 
-On Linux (I use Ubuntu) it uses ATLAS routines and needs libgfortran3. 
-On Windows 64bit it uses lapack-lite and needs mingw64-x86_64-gcc-core and mingw64-x86_64-gfortran in the path.
-
-You can read more about the datails on the [JBLAS project page.](http://jblas.org/ "JBLAS project page.")
-
-To check if it is available, it checks the system libraries at class loading time. 
-If you want to debug or have error messages if the libraries were loaded correctly you can set the VERBOSE flag in the MyNativeBlasLibraryLoader class like that:
-
-```java
-MyNativeBlasLibraryLoader.VERBOSE = true;
-```
-
-This will print error messages and help you tracing down problems with missing libraries.
-
 Benchmarks
 -------
 

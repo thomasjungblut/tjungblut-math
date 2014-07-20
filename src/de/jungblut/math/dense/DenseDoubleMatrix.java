@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Random;
 
 import org.apache.commons.math3.util.FastMath;
-import org.jblas.MyNativeBlasLibraryLoader;
 
 import de.jungblut.math.DoubleMatrix;
 import de.jungblut.math.DoubleVector;
@@ -19,15 +18,6 @@ import de.jungblut.math.DoubleVector.DoubleVectorElement;
  * matrix has additional array/object overhead to deal with.
  */
 public final class DenseDoubleMatrix implements DoubleMatrix {
-
-  private static final int JBLAS_COLUMN_THRESHOLD = 100;
-  private static final int JBLAS_ROW_THRESHOLD = 100;
-
-  private static final boolean JBLAS_AVAILABLE;
-
-  static {
-    JBLAS_AVAILABLE = MyNativeBlasLibraryLoader.loadLibraryAndCheckErrors();
-  }
 
   /**
    * We use a column major format to store the matrix, as two dimensional arrays
@@ -293,31 +283,15 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
 
   @Override
   public DoubleMatrix multiply(DoubleMatrix other) {
-    DenseDoubleMatrix matrix = null;
-
     int m = this.numRows;
     int n = this.numColumns;
     int p = other.getColumnCount();
-    // only execute when we have JBLAS and our matrix is bigger than 50x50
-    if (JBLAS_AVAILABLE && m > JBLAS_ROW_THRESHOLD
-        && n > JBLAS_COLUMN_THRESHOLD && !other.isSparse()) {
-      org.jblas.DoubleMatrix jblasThis = new org.jblas.DoubleMatrix(m, n,
-          this.matrix);
-      org.jblas.DoubleMatrix jblasOther = new org.jblas.DoubleMatrix(
-          other.getRowCount(), other.getColumnCount(),
-          ((DenseDoubleMatrix) other).matrix);
-      org.jblas.DoubleMatrix jblasRes = new org.jblas.DoubleMatrix(m, p);
-      jblasThis.mmuli(jblasOther, jblasRes);
-      // copy the result back
-      matrix = new DenseDoubleMatrix(jblasRes.toArray(), this.getRowCount(),
-          other.getColumnCount(), false);
-    } else {
-      matrix = new DenseDoubleMatrix(m, p);
-      for (int k = 0; k < n; k++) {
-        for (int i = 0; i < m; i++) {
-          for (int j = 0; j < p; j++) {
-            matrix.set(i, j, matrix.get(i, j) + get(i, k) * other.get(k, j));
-          }
+
+    DenseDoubleMatrix matrix = new DenseDoubleMatrix(m, p);
+    for (int k = 0; k < n; k++) {
+      for (int i = 0; i < m; i++) {
+        for (int j = 0; j < p; j++) {
+          matrix.set(i, j, matrix.get(i, j) + get(i, k) * other.get(k, j));
         }
       }
     }
