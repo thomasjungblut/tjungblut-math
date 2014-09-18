@@ -66,6 +66,16 @@ public class DenseDoubleMatrixTest extends TestCase {
     mat = new DenseDoubleMatrix(data, 3, 2);
     result = new double[][] { { 2d, 5d }, { 3d, 6d }, { 4d, 7d } };
     matrixEquals(result, ((DenseDoubleMatrix) mat).toArray());
+
+    mat = new DenseDoubleMatrix(1d, new DenseDoubleVector(new double[] { 1, 2,
+        3, 4, 5 }));
+    result = new double[][] { { 1d, 1d, 2d, 3d, 4d, 5d } };
+    matrixEquals(result, ((DenseDoubleMatrix) mat).toArray());
+
+    mat = new DenseDoubleMatrix(1d, new SparseDoubleVector(new double[] { 1, 0,
+        3, 0, 5 }));
+    result = new double[][] { { 1d, 1d, 0d, 3d, 0d, 5d } };
+    matrixEquals(result, ((DenseDoubleMatrix) mat).toArray());
   }
 
   @Test

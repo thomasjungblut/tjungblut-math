@@ -158,6 +158,38 @@ public final class DenseDoubleMatrix implements DoubleMatrix {
     this(v, rows, columns, true);
   }
 
+  /**
+   * Generates a single-row matrix with the given first column value (usually
+   * used as a bias) and the given vector as the appendant.
+   * 
+   * @param firstColumnValue the value at dimension 0.
+   * @param vector the vector for the following dimensions (1..n+1)
+   */
+  public DenseDoubleMatrix(double firstColumnValue, DoubleVector vector) {
+    this(1, vector.getDimension() + 1);
+    set(0, 0, firstColumnValue);
+    if (vector.isSparse()) {
+      Iterator<DoubleVectorElement> iterateNonZero = vector.iterateNonZero();
+      while (iterateNonZero.hasNext()) {
+        DoubleVectorElement next = iterateNonZero.next();
+        set(0, next.getIndex() + 1, next.getValue());
+      }
+    } else {
+      System.arraycopy(vector.toArray(), 0, this.matrix, 1,
+          vector.getDimension());
+    }
+  }
+
+  /**
+   * Generates a single-row matrix with the given row vector.
+   * 
+   * @param row the row vector to set.
+   */
+  public DenseDoubleMatrix(DoubleVector row) {
+    this(1, row.getDimension());
+    setRowVector(0, row);
+  }
+
   private DenseDoubleMatrix(double[] v, int rows, int columns, boolean copy) {
     this.numRows = rows;
     this.numColumns = columns;
