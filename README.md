@@ -138,11 +138,23 @@ licensed by Apache 2.0 license, although I haven't put the usual header into the
 
 If something is not licensed via Apache 2.0, there is a reference or an additional licence header included in the specific source file.
 
+Maven
+-----
+
+If you use maven, you can get the latest release using the following dependency:
+
+```
+ <dependency>
+     <groupId>de.jungblut.math</groupId>
+     <artifactId>tjungblut-math</artifactId>
+     <version>1.1</version>
+ </dependency>
+```
 
 Build
 -----
 
-You will need at least Java 7 to build this library.
+To build locally, you will need at least Java 7 to build this library.
 
 You can simply build with:
  
