@@ -148,8 +148,16 @@ You can simply build with:
  
 > mvn clean package install
 
-The created jar contains debuggable code + sources.
+The created jars contains debuggable code + sources + javadocs.
 
 If you want to skip testcases you can use:
 
 > mvn clean package install -DskipTests
+
+If you want to skip the signing process you can do:
+
+> mvn clean package install -Dgpg.skip=true
+
+To build for Java 1.7 you can simply pass in the java version:
+
+> mvn clean package install -Djava.version=1.7

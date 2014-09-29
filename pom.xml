@@ -5,6 +5,8 @@
 	<groupId>de.jungblut.math</groupId>
 	<artifactId>tjungblut-math</artifactId>
 	<name>tjungblut-math</name>
+	<description>This math library features some daily math operations on sparse/dense vectors and matrices.</description>
+	<url>https://github.com/thomasjungblut/tjungblut-math</url>
 	<version>1.1</version>
 	<packaging>jar</packaging>
 	<prerequisites>
@@ -17,6 +19,28 @@
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
+
+	<developers>
+		<developer>
+			<name>Thomas Jungblut</name>
+			<email>thomas.jungblut@gmail.com</email>
+			<organization>tjungblut</organization>
+			<organizationUrl>http://codingwiththomas.blogspot.com/</organizationUrl>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:git@github.com:thomasjungblut/tjungblut-math.git</connection>
+		<developerConnection>scm:git:git@github.com:thomasjungblut/tjungblut-math.git</developerConnection>
+		<url>git@github.com:thomasjungblut/tjungblut-math.git</url>
+	</scm>
+
+	<distributionManagement>
+		<snapshotRepository>
+			<id>ossrh</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</snapshotRepository>
+	</distributionManagement>
 
 	<dependencies>
 		<dependency>
@@ -41,6 +65,44 @@
 		</dependency>
 	</dependencies>
 
+	<profiles>
+		<profile>
+			<id>jdk17</id>
+			<activation>
+				<property>
+					<name>java.version</name>
+					<value>1.7</value>
+				</property>
+			</activation>
+			<properties>
+				<envClassifier>jdk17</envClassifier>
+				<maven.compiler.source>1.7</maven.compiler.source>
+				<maven.compiler.target>1.7</maven.compiler.target>
+			</properties>
+			<build>
+				<finalName>${project.artifactId}-${project.version}-Java7</finalName>
+			</build>
+		</profile>
+		<profile>
+			<id>jdk18</id>
+			<activation>
+				<property>
+					<name>java.version</name>
+					<value>1.8</value>
+				</property>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<envClassifier>jdk18</envClassifier>
+				<maven.compiler.source>1.8</maven.compiler.source>
+				<maven.compiler.target>1.8</maven.compiler.target>
+			</properties>
+			<build>
+				<finalName>${project.artifactId}-${project.version}-Java8</finalName>
+			</build>
+		</profile>
+	</profiles>
+
 	<build>
 		<!-- I have a plain layout -->
 		<sourceDirectory>src/</sourceDirectory>
@@ -50,17 +112,43 @@
 				<directory>src/</directory>
 			</resource>
 		</resources>
-		<finalName>tjungblut-math-${project.version}</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.2</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
 					<debug>true</debug>
 					<optimize>true</optimize>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<version>2.2.1</version>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar-no-fork</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.9.1</version>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<additionalparam>-Xdoclint:none</additionalparam>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -89,6 +177,32 @@
 					</execution>
 				</executions>
 			</plugin>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.3</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>1.5</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
 
