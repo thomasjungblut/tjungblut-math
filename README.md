@@ -142,7 +142,7 @@ If something is not licensed via Apache 2.0, there is a reference or an addition
 Build
 -----
 
-You will need Java 8 to build this library.
+You will need at least Java 7 to build this library.
 
 You can simply build with:
  
@@ -158,6 +158,3 @@ If you want to skip the signing process you can do:
 
 > mvn clean package install -Dgpg.skip=true
 
-To build for Java 1.7 you can simply pass in the java version:
-
-> mvn clean package install -Djava.version=1.7
