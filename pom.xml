@@ -79,9 +79,6 @@
 				<maven.compiler.source>1.7</maven.compiler.source>
 				<maven.compiler.target>1.7</maven.compiler.target>
 			</properties>
-			<build>
-				<finalName>${project.artifactId}-${project.version}-Java7</finalName>
-			</build>
 		</profile>
 		<profile>
 			<id>jdk18</id>
@@ -97,9 +94,6 @@
 				<maven.compiler.source>1.8</maven.compiler.source>
 				<maven.compiler.target>1.8</maven.compiler.target>
 			</properties>
-			<build>
-				<finalName>${project.artifactId}-${project.version}-Java8</finalName>
-			</build>
 		</profile>
 	</profiles>
 
@@ -120,6 +114,13 @@
 				<configuration>
 					<debug>true</debug>
 					<optimize>true</optimize>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>2.5</version>
+				<configuration>
+					<classifier>${envClassifier}</classifier>
 				</configuration>
 			</plugin>
 			<plugin>
