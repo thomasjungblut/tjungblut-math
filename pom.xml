@@ -6,7 +6,7 @@
 	<name>tjungblut-math</name>
 	<description>This math library features some daily math operations on sparse/dense vectors and matrices.</description>
 	<url>https://github.com/thomasjungblut/tjungblut-math</url>
-	<version>1.1-SNAPSHOT</version>
+	<version>1.2-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<prerequisites>
 		<maven>3.0</maven>
