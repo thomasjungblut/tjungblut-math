@@ -132,9 +132,19 @@ public final class DenseDoubleVector implements DoubleVector {
 
   @Override
   public final DoubleVector add(DoubleVector v) {
-    DenseDoubleVector newv = new DenseDoubleVector(this.getLength());
-    for (int i = 0; i < v.getLength(); i++) {
-      newv.set(i, this.get(i) + v.get(i));
+    DoubleVector newv = null;
+    if (v.isSparse()) {
+      newv = new DenseDoubleVector(vector);
+      Iterator<DoubleVectorElement> iterateNonZero = v.iterateNonZero();
+      while (iterateNonZero.hasNext()) {
+        DoubleVectorElement next = iterateNonZero.next();
+        set(next.getIndex(), this.get(next.getIndex()) + next.getValue());
+      }
+    } else {
+      newv = new DenseDoubleVector(this.getLength());
+      for (int i = 0; i < v.getLength(); i++) {
+        newv.set(i, this.get(i) + v.get(i));
+      }
     }
     return newv;
   }
@@ -150,9 +160,19 @@ public final class DenseDoubleVector implements DoubleVector {
 
   @Override
   public final DoubleVector subtract(DoubleVector v) {
-    DoubleVector newv = new DenseDoubleVector(this.getLength());
-    for (int i = 0; i < v.getLength(); i++) {
-      newv.set(i, this.get(i) - v.get(i));
+    DoubleVector newv = null;
+    if (v.isSparse()) {
+      newv = new DenseDoubleVector(vector);
+      Iterator<DoubleVectorElement> iterateNonZero = v.iterateNonZero();
+      while (iterateNonZero.hasNext()) {
+        DoubleVectorElement next = iterateNonZero.next();
+        set(next.getIndex(), this.get(next.getIndex()) - next.getValue());
+      }
+    } else {
+      newv = new DenseDoubleVector(this.getLength());
+      for (int i = 0; i < v.getLength(); i++) {
+        newv.set(i, this.get(i) - v.get(i));
+      }
     }
     return newv;
   }
@@ -185,12 +205,20 @@ public final class DenseDoubleVector implements DoubleVector {
   }
 
   @Override
-  public DoubleVector multiply(DoubleVector vector) {
-    DoubleVector v = new DenseDoubleVector(this.getLength());
-    for (int i = 0; i < v.getLength(); i++) {
-      v.set(i, this.get(i) * vector.get(i));
+  public DoubleVector multiply(DoubleVector v) {
+    DoubleVector newv = new DenseDoubleVector(this.getLength());
+    if (v.isSparse()) {
+      Iterator<DoubleVectorElement> iterateNonZero = v.iterateNonZero();
+      while (iterateNonZero.hasNext()) {
+        DoubleVectorElement next = iterateNonZero.next();
+        set(next.getIndex(), this.get(next.getIndex()) * next.getValue());
+      }
+    } else {
+      for (int i = 0; i < v.getLength(); i++) {
+        newv.set(i, this.get(i) * v.get(i));
+      }
     }
-    return v;
+    return newv;
   }
 
   @Override
@@ -293,8 +321,16 @@ public final class DenseDoubleVector implements DoubleVector {
   @Override
   public double dot(DoubleVector s) {
     double dotProduct = 0.0d;
-    for (int i = 0; i < getLength(); i++) {
-      dotProduct += this.get(i) * s.get(i);
+    if (s.isSparse()) {
+      Iterator<DoubleVectorElement> iterateNonZero = s.iterateNonZero();
+      while (iterateNonZero.hasNext()) {
+        DoubleVectorElement next = iterateNonZero.next();
+        dotProduct += this.get(next.getIndex()) * next.getValue();
+      }
+    } else {
+      for (int i = 0; i < getLength(); i++) {
+        dotProduct += this.get(i) * s.get(i);
+      }
     }
     return dotProduct;
   }
