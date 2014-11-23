@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import de.jungblut.math.DoubleVector.DoubleVectorElement;
 
-public class DoubleVectorTest extends TestCase {
+public class DoubleVectorElementTest extends TestCase {
 
   @Test
   public void testDoubleVectorElement() {

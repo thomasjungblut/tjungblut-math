@@ -96,7 +96,7 @@ public class DenseDoubleVectorTest extends TestCase {
     double[] arr = new double[] { 1, 2, 3, 4, 5 };
     DenseDoubleVector vec = new DenseDoubleVector(arr);
     double[] arr2 = new double[] { 2, 3, 4, 5, 6 };
-    DenseDoubleVector vec2 = new DenseDoubleVector(arr2);
+    DoubleVector vec2 = new DenseDoubleVector(arr2);
 
     DoubleVector summation = vec.add(vec2);
     double[] res = new double[] { 3, 5, 7, 9, 11 };
@@ -105,6 +105,12 @@ public class DenseDoubleVectorTest extends TestCase {
 
     summation = summation.add(5d);
     res = new double[] { 8, 10, 12, 14, 16 };
+
+    arrayEquals(res, summation.toArray());
+
+    vec2 = new SparseDoubleVector(new double[] { 0, 0, 1, 2, 0 });
+    summation = vec.add(vec2);
+    res = new double[] { 1, 2, 4, 6, 5 };
 
     arrayEquals(res, summation.toArray());
 
@@ -122,7 +128,7 @@ public class DenseDoubleVectorTest extends TestCase {
     double[] arr = new double[] { 1, 2, 3, 4, 5 };
     double[] arr2 = new double[] { 2, 3, 4, -5, 6 };
     DenseDoubleVector vec = new DenseDoubleVector(arr);
-    DenseDoubleVector vec2 = new DenseDoubleVector(arr2);
+    DoubleVector vec2 = new DenseDoubleVector(arr2);
 
     DoubleVector summation = vec.subtract(vec2);
     double[] res = new double[] { -1, -1, -1, 9, -1 };
@@ -137,6 +143,12 @@ public class DenseDoubleVectorTest extends TestCase {
     DoubleVector subtractFrom = summation.subtractFrom(15);
     res = new double[] { 21, 21, 21, 11, 21 };
     arrayEquals(res, subtractFrom.toArray());
+
+    vec2 = new SparseDoubleVector(new double[] { 0, 0, 1, 2, 0 });
+    summation = vec.subtract(vec2);
+    res = new double[] { 1, 2, 2, 2, 5 };
+
+    arrayEquals(res, summation.toArray());
   }
 
   @Test
@@ -150,6 +162,13 @@ public class DenseDoubleVectorTest extends TestCase {
     DoubleVector multiply2 = multiply.multiply(15);
     res = new double[] { 15, 4 * 15, 9 * 15, 16 * 15, 25 * 15 };
     arrayEquals(res, multiply2.toArray());
+
+    SparseDoubleVector vec2 = new SparseDoubleVector(new double[] { 0, 0, 1, 2,
+        0 });
+    multiply = vec.multiply(vec2);
+    res = new double[] { 0, 0, 3, 8, 0 };
+
+    arrayEquals(res, multiply.toArray());
 
   }
 

@@ -138,7 +138,7 @@ public final class DenseDoubleVector implements DoubleVector {
       Iterator<DoubleVectorElement> iterateNonZero = v.iterateNonZero();
       while (iterateNonZero.hasNext()) {
         DoubleVectorElement next = iterateNonZero.next();
-        set(next.getIndex(), this.get(next.getIndex()) + next.getValue());
+        newv.set(next.getIndex(), this.get(next.getIndex()) + next.getValue());
       }
     } else {
       newv = new DenseDoubleVector(this.getLength());
@@ -166,7 +166,7 @@ public final class DenseDoubleVector implements DoubleVector {
       Iterator<DoubleVectorElement> iterateNonZero = v.iterateNonZero();
       while (iterateNonZero.hasNext()) {
         DoubleVectorElement next = iterateNonZero.next();
-        set(next.getIndex(), this.get(next.getIndex()) - next.getValue());
+        newv.set(next.getIndex(), this.get(next.getIndex()) - next.getValue());
       }
     } else {
       newv = new DenseDoubleVector(this.getLength());
@@ -211,7 +211,7 @@ public final class DenseDoubleVector implements DoubleVector {
       Iterator<DoubleVectorElement> iterateNonZero = v.iterateNonZero();
       while (iterateNonZero.hasNext()) {
         DoubleVectorElement next = iterateNonZero.next();
-        set(next.getIndex(), this.get(next.getIndex()) * next.getValue());
+        newv.set(next.getIndex(), this.get(next.getIndex()) * next.getValue());
       }
     } else {
       for (int i = 0; i < v.getLength(); i++) {
