@@ -132,7 +132,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   @Override
   public final DoubleVector add(DoubleVector v) {
-    DenseDoubleVector newv = new DenseDoubleVector(v.getLength());
+    DenseDoubleVector newv = new DenseDoubleVector(this.getLength());
     for (int i = 0; i < v.getLength(); i++) {
       newv.set(i, this.get(i) + v.get(i));
     }
@@ -150,7 +150,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   @Override
   public final DoubleVector subtract(DoubleVector v) {
-    DoubleVector newv = new DenseDoubleVector(v.getLength());
+    DoubleVector newv = new DenseDoubleVector(this.getLength());
     for (int i = 0; i < v.getLength(); i++) {
       newv.set(i, this.get(i) - v.get(i));
     }
@@ -249,7 +249,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector pow(double x) {
-    DenseDoubleVector v = new DenseDoubleVector(getLength());
+    DenseDoubleVector v = new DenseDoubleVector(this.getLength());
     for (int i = 0; i < v.getLength(); i++) {
       double value = 0.0d;
       // it is faster to multiply when we having ^2
@@ -265,7 +265,7 @@ public final class DenseDoubleVector implements DoubleVector {
 
   @Override
   public DoubleVector sqrt() {
-    DoubleVector v = new DenseDoubleVector(getLength());
+    DoubleVector v = new DenseDoubleVector(this.getLength());
     for (int i = 0; i < v.getLength(); i++) {
       v.set(i, FastMath.sqrt(vector[i]));
     }
