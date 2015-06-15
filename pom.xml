@@ -6,7 +6,7 @@
 	<name>tjungblut-math</name>
 	<description>This math library features some daily math operations on sparse/dense vectors and matrices.</description>
 	<url>https://github.com/thomasjungblut/tjungblut-math</url>
-	<version>1.2-SNAPSHOT</version>
+	<version>1.3-SNAPSHOT</version>
 	<packaging>jar</packaging>
 	<prerequisites>
 		<maven>3.0</maven>
@@ -36,7 +36,8 @@
 		<connection>scm:git:git@github.com:thomasjungblut/tjungblut-math.git</connection>
 		<developerConnection>scm:git:git@github.com:thomasjungblut/tjungblut-math.git</developerConnection>
 		<url>git@github.com:thomasjungblut/tjungblut-math.git</url>
-	</scm>
+	  <tag>HEAD</tag>
+  </scm>
 
 	<distributionManagement>
 		<snapshotRepository>
