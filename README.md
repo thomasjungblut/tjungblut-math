@@ -147,7 +147,7 @@ If you use maven, you can get the latest release using the following dependency:
  <dependency>
      <groupId>de.jungblut.math</groupId>
      <artifactId>tjungblut-math</artifactId>
-     <version>1.1</version>
+     <version>1.2</version>
  </dependency>
 ```
 
