@@ -180,7 +180,7 @@ public final class SequentialSparseDoubleVector implements DoubleVector {
   @Override
   public DoubleVector subtract(DoubleVector other) {
     SequentialSparseDoubleVector result = new SequentialSparseDoubleVector(this);
-    if (other.isSparse()) {
+    if (other.isSparse() && other instanceof SequentialSparseDoubleVector) {
       SequentialSparseDoubleVector vec = (SequentialSparseDoubleVector) other;
       result.mapping.merge(vec.mapping, (l, r) -> l - r);
     } else {
