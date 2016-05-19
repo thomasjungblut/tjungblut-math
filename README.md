@@ -1,12 +1,28 @@
 This is my own Math package. It features some daily math operations on sparse/dense vectors and matrices.
 
+Features
+--------
+
+- Basic linear algebra primitives and operations
+- Sparse (Ordered, Unordered, Bit, Named, OneDimensional and Keyed) and Dense vector
+- Sparse and Dense matrix (row-wise sharding, column major ordering)
+- Tuples (two and three dimensional)
+- Functions on all primitives for lambdas in Java 8
+
+Roadmap
+-------
+
+- Byte code optimizer (read further below)
+- Tensors
+- More operations and implementations of the interfaces
+
+Trivia
+------
+
 Parts of this library are also featured in Apache Hama's ML module and power several algorithms there.
 
-I have worked on the test coverage and received 100% instruction coverage on the core math classes in the latest 1.1 version.
-Note that test coverage is not a very good metric for bug-freeness as many tests state implicit assertions.
-
 Chain Calling
--------
+-------------
 
 My library was intentionally build to easily translate octave/matlab code from MOOC's to Java.
 For example the following octave code (simple gradient descent):
@@ -85,7 +101,7 @@ Until ~50x50 there is no benefit in using JBLAS and even later on there is littl
 from heap to native memory and the slowness of lapack lite. 
 The GPU gives great improvements when matrices get very large > 500x500 and copy costs (main to device memory) start to amortize itself.
  
-On Linux this looks a bit more in favor of JBLAS:
+On Linux this looks a bit more in favor of JBLAS (take care, this is comparing different hardware):
 
 ```
    n    type          us linear runtime
@@ -120,13 +136,7 @@ On Linux this looks a bit more in favor of JBLAS:
 Hardware: Intel i7-3740QM, Nvidia GeForce GT 650M (mobile)
 ```
 
-ATLAS does in fact better from 10x10 matrices. The GPU outperfoms the Java code earlier on 100x100 matrices, and outperforms ATLAS from 500x500.
-The difference isn't extreme between ATLAS and the GPU, because I benchmarked on a laptop. 
-The memory interface width is much more narrow than on the desktop (128 bit vs. at least 384 bit). Also the desktop has more CUDA Cores (512 vs. 384).
-If you would run this on a desktop (e.g. with a GTX780) the result would be desaterous for JBLAS from 100x100 matrices. (Will bench this in the future!)
-
-So even if you have a cool library at hand, you still need to benchmark the parameters on your target system. 
-Always remember the smart sentence in relation to technology: If you have a hammer, everything looks like a nail.
+ATLAS does in fact better from 10x10 matrices. The GPU outperfoms the Java code earlier on 100x100 matrices, and outperforms ATLAS from 500x500. The difference isn't extreme between ATLAS and the GPU, because I benchmarked on a laptop and the memory interface width is much more narrow than on the desktop (128 bit vs. at least 384 bit).
 
 The benchmark code can be found [here.](https://gist.github.com/thomasjungblut/5652037 "here")
 
@@ -154,7 +164,7 @@ If you use maven, you can get the latest release using the following dependency:
 Build
 -----
 
-To build locally, you will need at least Java 7 to build this library.
+To build locally, you will need at least Java 8 to build this library.
 
 You can simply build with:
  
