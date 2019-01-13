@@ -136,7 +136,7 @@ On Linux this looks a bit more in favor of JBLAS (take care, this is comparing d
 Hardware: Intel i7-3740QM, Nvidia GeForce GT 650M (mobile)
 ```
 
-ATLAS does in fact better from 10x10 matrices. The GPU outperfoms the Java code earlier on 100x100 matrices, and outperforms ATLAS from 500x500. The difference isn't extreme between ATLAS and the GPU, because I benchmarked on a laptop and the memory interface width is much more narrow than on the desktop (128 bit vs. at least 384 bit).
+ATLAS does in fact better from 10x10 matrices. The GPU outperforms the Java code earlier on 100x100 matrices, and outperforms ATLAS from 500x500. The difference isn't extreme between ATLAS and the GPU, because I benchmarked on a laptop and the memory interface width is much more narrow than on the desktop (128 bit vs. at least 384 bit).
 
 The benchmark code can be found [here.](https://gist.github.com/thomasjungblut/5652037 "here")
 
