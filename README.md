@@ -1,4 +1,8 @@
-This is my own Math package. It features some daily math operations on sparse/dense vectors and matrices.
+![Java CI with Maven](https://github.com/thomasjungblut/tjungblut-math/workflows/Java%20CI%20with%20Maven/badge.svg?branch=master)
+
+## tjungblut-math
+
+This is my own Math library. It features some daily math operations on sparse/dense vectors and matrices.
 
 Features
 --------
